@@ -68,17 +68,17 @@ void PlayerEntity::damage(const Vec2& direction, uint damageTaken)
 void PlayerEntity::update(float dt)
 {
 	// Handle controls
-	static const float MAX_VELOCITY = 125.0f;
-	static const float ACCELERATION = 1000.0f;
+	static const float MAX_VELOCITY = 250.0f;
+	static const float ACCELERATION = 2000.0f;
 	Vec2 targetVelocity(0.0f, 0.0f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		targetVelocity.y = -MAX_VELOCITY;
+		mVelocity.y = -MAX_VELOCITY;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		targetVelocity.y = MAX_VELOCITY;
+		mVelocity.y = MAX_VELOCITY;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		targetVelocity.x = -MAX_VELOCITY;
+		mVelocity.x = -MAX_VELOCITY;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		targetVelocity.x = MAX_VELOCITY;
+		mVelocity.x = MAX_VELOCITY;
 
 	// Shooting
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))

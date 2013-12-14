@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LD48", "LD48\LD48.vcxproj", "{89DF8B0C-8A1E-48F2-A491-7A3192A0A397}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LD28", "LD28.vcxproj", "{89DF8B0C-8A1E-48F2-A491-7A3192A0A397}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

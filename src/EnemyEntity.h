@@ -5,16 +5,16 @@
 
 #include "DameageableEntity.h"
 #include "EnemyPartEntity.h"
+#include "EntityManager.h"
 
 class EnemyEntity : public DamageableEntity, public enable_shared_from_this<EnemyEntity>
 {
 public:
-	EnemyEntity(const Vec2& position, float speed);
+	EnemyEntity(const Vec2& position, EnemyDesc& desc);
 	virtual ~EnemyEntity();
 
 	// Sub-parts
 	void _setupParts();
-	virtual void _addPart(const Vec2& position, const string& texture, int health);
 
 	// Inherited from ShipEntity
 	virtual void damage(const Vec2& direction, uint damageTaken);
@@ -24,6 +24,8 @@ public:
 	virtual sf::Sprite& getSprite();
 
 private:
+	EnemyDesc mDesc;
+
 	float mSpeed;
 
 	// Sub parts

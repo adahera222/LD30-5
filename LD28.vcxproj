@@ -33,6 +33,7 @@
     <ClCompile Include="src\EnemyPartEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityManager.cpp" />
+    <ClCompile Include="src\jsoncpp.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Common.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

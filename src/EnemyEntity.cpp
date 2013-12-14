@@ -4,11 +4,12 @@
 #include "EnemyEntity.h"
 #include "EntityManager.h"
 
-EnemyEntity::EnemyEntity(const Vec2& position, float speed) :
-	DamageableEntity(position, 100),
-	mSpeed(speed)
+EnemyEntity::EnemyEntity(const Vec2& position, EnemyDesc& desc) :
+	DamageableEntity(position, desc.health),
+	mDesc(desc),
+	mSpeed(desc.speed)
 {
-	mTexture.loadFromFile("media/enemy1.png");
+	mTexture.loadFromFile("media/" + desc.sprite);
 	Vec2 textureSize((float)mTexture.getSize().x, (float)mTexture.getSize().y);
 	mSprite.setTexture(mTexture);
 	mSprite.setOrigin(textureSize * 0.5f);
@@ -21,13 +22,11 @@ EnemyEntity::~EnemyEntity()
 
 void EnemyEntity::_setupParts()
 {
-	_addPart(Vec2(0.0f, 0.0f), "media/enemy1-gun.png", 100);
-}
-
-void EnemyEntity::_addPart(const Vec2& position, const string& texture, int health)
-{
-	shared_ptr<EnemyPartEntity> part = EntityManager::inst().createEnemyPart(position, texture, health, shared_from_this());
-	mParts.push_back(part);
+	for (auto i = mDesc.parts.begin(); i != mDesc.parts.end(); ++i)
+	{
+		shared_ptr<EnemyPartEntity> part = EntityManager::inst().createEnemyPart(*i, shared_from_this());
+		mParts.push_back(part);
+	}
 }
 
 void EnemyEntity::damage(const Vec2& direction, uint damageTaken)

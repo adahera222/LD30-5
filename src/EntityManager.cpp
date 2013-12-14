@@ -5,6 +5,47 @@
 
 EntityManager::EntityManager()
 {
+	// Load JSON
+	ifstream file("media/enemy-detail.json");
+	Json::Reader reader;
+	Json::Value root;
+	reader.parse(file, root);
+	for (Json::ValueIterator i = root.begin(); i != root.end(); ++i)
+	{
+		const Json::Value& enemy = *i;
+
+		// Fill in enemy data
+		EnemyDesc enemyDesc;
+		enemyDesc.name = enemy["Name"].asString();
+		enemyDesc.sprite = enemy["Sprite"].asString();
+		enemyDesc.health = enemy["Health"].asUInt();
+		enemyDesc.speed = enemy["Speed"].asFloat();
+
+		// Add parts
+		if (enemy.isMember("Parts"))
+		{
+			const Json::Value& partsList = enemy["Parts"];
+			for (Json::ValueIterator l = partsList.begin(); l != partsList.end(); ++l)
+			{
+				Json::Value& part = *l;
+
+				// Fill in part data
+				EnemyPartDesc partDesc;
+				partDesc.sprite = part["Sprite"].asString();
+				partDesc.health = part["Health"].asUInt();
+				partDesc.speed = part["Speed"].asFloat();
+				partDesc.position.x = part["Position"][0].asFloat();
+				partDesc.position.y = part["Position"][1].asFloat();
+				partDesc.rotation = part["Rotation"].asFloat();
+				partDesc.fixed = part["Fixed"].asBool();
+
+				enemyDesc.parts.push_back(partDesc);
+			}
+		}
+
+		// Add the new enemy
+		mEnemyDescs.insert(make_pair(enemyDesc.name, enemyDesc));
+	}
 }
 
 EntityManager::~EntityManager()
@@ -23,17 +64,20 @@ shared_ptr<PlayerEntity> EntityManager::createPlayer(const Vec2& position, uint 
 	return newPlayer;
 }
 
-shared_ptr<EnemyEntity> EntityManager::createEnemy(const Vec2& position, float speed)
+shared_ptr<EnemyEntity> EntityManager::createEnemy(const Vec2& position, const string& name)
 {
-	shared_ptr<EnemyEntity> newEnemy(new EnemyEntity(position, speed));
+	shared_ptr<EnemyEntity> newEnemy(new EnemyEntity(position, mEnemyDescs[name]));
 	mEntities.push_back(newEnemy);
-	newEnemy->_setupParts(); // this guarantees that parts are updated after their parent
+
+	// This guarantees that parts are updated after their parent
+	newEnemy->_setupParts(); 
+
 	return newEnemy;
 }
 
-shared_ptr<EnemyPartEntity> EntityManager::createEnemyPart(const Vec2& position, const string& texture, int health, shared_ptr<EnemyEntity> parent)
+shared_ptr<EnemyPartEntity> EntityManager::createEnemyPart(EnemyPartDesc& partDesc, shared_ptr<EnemyEntity> parent)
 {
-	shared_ptr<EnemyPartEntity> newPart(new EnemyPartEntity(position, texture, health, parent));
+	shared_ptr<EnemyPartEntity> newPart(new EnemyPartEntity(partDesc, parent));
 	mEntities.push_back(newPart);
 	return newPart;
 }

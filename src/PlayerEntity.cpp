@@ -27,7 +27,7 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 
 	// Set up shield sprites
 	Vec2 shieldTextureSize((float)mShieldTexture.getSize().x, (float)mShieldTexture.getSize().y);
-	for (uint i = 0; i < 5; ++i)
+	for (uint i = 0; i < 10; ++i)
 	{
 		Shield shield;
 		shield.sprite.setTexture(mShieldTexture);
@@ -73,8 +73,8 @@ bool PlayerEntity::inBulletTime() const
 void PlayerEntity::update(float dt)
 {
 	// Handle controls
-	static const float MAX_VELOCITY = 250.0f;
-	static const float ACCELERATION = 2000.0f;
+	static const float MAX_VELOCITY = 300.0f;
+	static const float ACCELERATION = 1000.0f;
 	Vec2 targetVelocity(0.0f, 0.0f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		mVelocity.y = -MAX_VELOCITY;

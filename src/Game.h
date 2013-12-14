@@ -9,6 +9,10 @@ class Game
 public:
 	static int run();
 	static float getTimeRate();
+	
+	// Resolution - this is fixed
+	static const uint SCREEN_WIDTH = 640;
+	static const uint SCREEN_HEIGHT = 480;
 
 };
 

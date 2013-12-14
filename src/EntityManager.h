@@ -17,8 +17,8 @@ public:
 	~EntityManager();
 
 	shared_ptr<PlayerEntity> createPlayer(const Vec2& position, uint shipID);
-	shared_ptr<EnemyEntity> createEnemy(const Vec2& position, float speed);
-	shared_ptr<EnemyPartEntity> createEnemyPart(const Vec2& position, const string& texture, int health, shared_ptr<EnemyEntity> parent);
+	shared_ptr<EnemyEntity> createEnemy(const Vec2& position, const string& name);
+	shared_ptr<EnemyPartEntity> createEnemyPart(EnemyPartDesc& partDesc, shared_ptr<EnemyEntity> parent);
 	shared_ptr<BulletEntity> createBullet(bool friendly);
 	shared_ptr<PlayerEntity> getPlayer() const;
 	void destroyEntity(shared_ptr<Entity> ent);
@@ -33,6 +33,8 @@ public:
 	vector<shared_ptr<BulletEntity>>::iterator getNonPlayerBulletsEnd();
 
 private:
+	map<string, EnemyDesc> mEnemyDescs;
+
 	shared_ptr<PlayerEntity> mPlayer;
 	vector<shared_ptr<Entity>> mEntities;
 	vector<shared_ptr<BulletEntity>> mPlayerBullets; // bullets are stored seperately for collision detection

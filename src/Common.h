@@ -25,6 +25,9 @@ using namespace std;
 #include <SFML/Window.hpp>
 #include "Collision.h"
 
+// json-cpp
+#include "json/json.h"
+
 // Windows
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -48,5 +51,25 @@ int random(int min, int max);
 
 // Game
 #include "Game.h"
+
+// Desc structures
+struct EnemyPartDesc
+{
+	string sprite;
+	uint health;
+	float speed;
+	Vec2 position;
+	float rotation;
+	bool fixed;
+};
+
+struct EnemyDesc
+{
+	string name;
+	string sprite;
+	uint health;
+	float speed;
+	vector<EnemyPartDesc> parts;
+};
 
 #endif // Common_h__

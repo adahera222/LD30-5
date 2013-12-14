@@ -6,14 +6,16 @@
 #include "EntityManager.h"
 #include "BulletManager.h"
 
-EnemyPartEntity::EnemyPartEntity(const Vec2& position, const string& texture, int health, shared_ptr<EnemyEntity> parent) :
-	DamageableEntity(position, health),
+EnemyPartEntity::EnemyPartEntity(EnemyPartDesc& desc, shared_ptr<EnemyEntity> parent) :
+	DamageableEntity(desc.position, desc.health),
+	mDesc(desc),
 	mParent(parent)
 {
-	mTexture.loadFromFile(texture);
+	mTexture.loadFromFile("media/" + desc.sprite);
 	Vec2 textureSize((float)mTexture.getSize().x, (float)mTexture.getSize().y);
 	mSprite.setTexture(mTexture);
 	mSprite.setOrigin(textureSize * 0.5f);
+	mSprite.setRotation(desc.rotation);
 }
 
 EnemyPartEntity::~EnemyPartEntity()
@@ -30,20 +32,24 @@ void EnemyPartEntity::update(float dt)
 	shared_ptr<EnemyEntity> parent = mParent.lock();
 	assert(parent != shared_ptr<EnemyEntity>());
 
-	// Aim at the player
 	Vec2 worldPosition = mPosition + parent->getPosition();
 	Vec2 playerDirection = worldPosition - EntityManager::inst().getPlayer()->getPosition();
-	float rotation = atan2(playerDirection.y, playerDirection.x) * RAD_TO_DEG + 90.0f;
-	mSprite.setRotation(rotation);
+
+	// Aim at the player
+	if (!mDesc.fixed)
+	{
+		float rotation = atan2(playerDirection.y, playerDirection.x) * RAD_TO_DEG + 90.0f;
+		mSprite.setRotation(rotation + mDesc.rotation);
+	}
 
 	// Fire bullets
-	// TODO: Magic Numbers!!!
-	if (worldPosition.y >= 0.0f && worldPosition.y < 600.0f)
+	Vec2 velocity(sin(mSprite.getRotation() * DEG_TO_RAD), -cos(mSprite.getRotation() * DEG_TO_RAD));
+	velocity *= mDesc.speed;
+	if (worldPosition.y >= 0.0f && worldPosition.y < Game::SCREEN_HEIGHT)
 	{
 		if (mBulletCycle.getElapsedTime().asSeconds() > 1.0f / Game::getTimeRate())
 		{
-			Vec2 velocity = playerDirection; velocity *= -200.0f / sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-			BulletManager::inst().spawn(worldPosition, velocity, parent, BT_PLAYER_COMMON, false);
+			BulletManager::inst().spawn(worldPosition, velocity, parent, BT_ENEMY_COMMON, false);
 			mBulletCycle.restart();
 		}
 	}

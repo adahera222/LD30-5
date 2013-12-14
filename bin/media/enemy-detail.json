@@ -1,0 +1,77 @@
+[
+	{
+		"Name":"enemy1",
+		"Sprite":"enemy1.png",
+		"Health":100,
+		"Speed":50,
+		"Parts":
+		[
+			{
+				"Sprite":"enemy1-gun.png",
+				"Health":99999,
+				"Speed":200,
+				"Position":[0, 0],
+				"Rotation":180,
+				"Fixed":false
+			}
+		]
+	},
+	{
+		"Name":"enemy2",
+		"Sprite":"enemy2.png",
+		"Health":50,
+		"Speed":50,
+		"Parts":
+		[
+			{
+				"Sprite":"",
+				"Health":99999,
+				"Speed":200,
+				"Position":[0, 0],
+				"Rotation":180,
+				"Fixed":true
+			}
+		]
+	},
+	{
+		"Name":"boss1",
+		"Sprite":"boss1.png",
+		"Health":2000,
+		"Speed":10,
+		"Parts":
+		[
+			{
+				"Sprite":"enemy1-gun.png",
+				"Health":200,
+				"Speed":200,
+				"Position":[0, 0],
+				"Rotation":270,
+				"Fixed":false
+			},
+			{
+				"Sprite":"enemy1-gun.png",
+				"Health":200,
+				"Speed":200,
+				"Position":[0, 0],
+				"Rotation":90,
+				"Fixed":false
+			},
+			{
+				"Sprite":"boss1-forward-gun.png",
+				"Health":200,
+				"Speed":200,
+				"Position":[0, 0],
+				"Rotation":180,
+				"Fixed":true
+			},
+			{
+				"Sprite":"boss1-forward-gun.png",
+				"Health":200,
+				"Speed":200,
+				"Position":[0, 0],
+				"Rotation":180,
+				"Fixed":true
+			}
+		]
+	}
+]

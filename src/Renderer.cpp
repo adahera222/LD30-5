@@ -5,7 +5,7 @@
 #include "EntityManager.h"
 
 Renderer::Renderer(uint width, uint height, bool fullscreen) :
-	mWindow(sf::VideoMode(width, height), "LD28")
+	mWindow(sf::VideoMode(width, height), "LD28", fullscreen ? sf::Style::Fullscreen : 7U)
 {
 	// Set window settings
 	mWindow.setVerticalSyncEnabled(true);

@@ -10,7 +10,7 @@ class EnemyEntity;
 class EnemyPartEntity : public DamageableEntity
 {
 public:
-	EnemyPartEntity(const Vec2& position, const string& texture, int health, shared_ptr<EnemyEntity> parent);
+	EnemyPartEntity(EnemyPartDesc& desc, shared_ptr<EnemyEntity> parent);
 	virtual ~EnemyPartEntity();
 
 	// Inherited from ShipEntity
@@ -21,6 +21,8 @@ public:
 	virtual sf::Sprite& getSprite();
 
 protected:
+	EnemyPartDesc& mDesc;
+
 	weak_ptr<EnemyEntity> mParent;
 
 	sf::Texture mTexture;

@@ -11,9 +11,9 @@ EntityManager::~EntityManager()
 {
 }
 
-PlayerEntity* EntityManager::createPlayer(const Vec2& position)
+PlayerEntity* EntityManager::createPlayer(const Vec2& position, uint shipID)
 {
-	PlayerEntity* newPlayer = new PlayerEntity(position);
+	PlayerEntity* newPlayer = new PlayerEntity(position, shipID);
 	mEntities.push_back(newPlayer);
 	return newPlayer;
 }
@@ -23,6 +23,12 @@ void EntityManager::destroyEntity(Entity* ent)
 	assert(find(mEntities.begin(), mEntities.end(), ent) != mEntities.end());
 	mEntities.erase(remove(mEntities.begin(), mEntities.end(), ent), mEntities.end());
 	delete ent;
+}
+
+void EntityManager::updateAll(float dt)
+{
+	for (auto i = mEntities.begin(); i != mEntities.end(); ++i)
+		(*i)->update(dt);
 }
 
 vector<Entity*>::iterator EntityManager::getEntitiesBegin()

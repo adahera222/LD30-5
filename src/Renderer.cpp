@@ -39,7 +39,7 @@ void Renderer::render()
 
 	// Draw entities
 	for (auto i = EntityManager::inst().getEntitiesBegin(); i != EntityManager::inst().getEntitiesEnd(); ++i)
-		(*i)->render();
+		(*i)->render(mWindow);
 
 	mWindow.display();
 }

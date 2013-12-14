@@ -3,6 +3,8 @@
 #ifndef Common_h__
 #define Common_h__
 
+#define EPSILON 1e-6f
+
 // Standard Library
 #include <assert.h>
 #include <string>
@@ -30,5 +32,16 @@ using namespace std;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef sf::Vector2f Vec2;
+
+// Math Constants
+#define PI 3.14159f
+#define TWO_PI (2.0f * PI)
+#define RAD_TO_DEG (180.0f / PI)
+#define DEG_TO_RAD (PI / 180.0f)
+
+// Random numbers
+void randomSeed(uint seed);
+float random(float min, float max);
+int random(int min, int max);
 
 #endif // Common_h__

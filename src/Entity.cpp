@@ -16,7 +16,7 @@ void Entity::update(float dt)
 {
 }
 
-void Entity::render()
+void Entity::render(sf::RenderWindow& window)
 {
 }
 

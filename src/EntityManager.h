@@ -13,8 +13,10 @@ public:
 	EntityManager();
 	~EntityManager();
 
-	PlayerEntity* createPlayer(const Vec2& position);
+	PlayerEntity* createPlayer(const Vec2& position, uint shipID);
 	void destroyEntity(Entity* ent);
+
+	void updateAll(float dt);
 
 	vector<Entity*>::iterator getEntitiesBegin();
 	vector<Entity*>::iterator getEntitiesEnd();

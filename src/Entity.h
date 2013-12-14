@@ -10,7 +10,7 @@ public:
 	virtual ~Entity();
 
 	virtual void update(float dt);
-	virtual void render();
+	virtual void render(sf::RenderWindow& window);
 
 	void setPosition(const Vec2& position);
 	const Vec2& getPosition() const;

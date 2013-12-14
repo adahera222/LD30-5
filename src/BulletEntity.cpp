@@ -7,7 +7,7 @@ BulletEntity::BulletEntity() :
 	Entity(Vec2(0.0f, 0.0f)),
 	mVelocity(0.0f, 0.0f),
 	mRotation(0.0f),
-	mParent(nullptr),
+	mParent(),
 	mActive(false),
 	mTexturePtr(nullptr)
 {
@@ -17,7 +17,7 @@ BulletEntity::~BulletEntity()
 {
 }
 
-void BulletEntity::spawn(const Vec2& position, const Vec2& velocity, Entity* parent, sf::Texture& texture)
+void BulletEntity::spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, sf::Texture& texture)
 {
 	mPosition = position;
 	mVelocity = velocity;
@@ -52,7 +52,7 @@ void BulletEntity::render(sf::RenderWindow& window)
 	}
 }
 
-void BulletEntity::onCollision(Entity* other)
+void BulletEntity::onCollision(shared_ptr<Entity> other)
 {
 }
 
@@ -61,9 +61,9 @@ sf::Sprite& BulletEntity::getSprite()
 	return mSprite;
 }
 
-Entity* BulletEntity::getParent()
+shared_ptr<Entity> BulletEntity::getParent()
 {
-	return mParent;
+	return mParent.lock();
 }
 
 bool BulletEntity::isActive() const

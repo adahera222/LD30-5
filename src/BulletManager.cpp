@@ -16,7 +16,7 @@ BulletManager::BulletManager()
 	// Create initial bullets
 	for (uint i = 0; i < 100; ++i)
 	{
-		BulletEntity* ent = EntityManager::inst().createBullet();
+		shared_ptr<BulletEntity> ent = EntityManager::inst().createBullet();
 		mBulletCache.push_back(ent);
 	}
 }
@@ -28,16 +28,16 @@ BulletManager::~BulletManager()
 	mBulletCache.clear();
 }
 
-void BulletManager::spawn(const Vec2& position, const Vec2& velocity, Entity* parent, BulletType type)
+void BulletManager::spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, BulletType type)
 {
 	// Take first bullet
-	list<BulletEntity*>::iterator front = mBulletCache.begin();
+	auto front = mBulletCache.begin();
 
 	// Spawn it
 	(*front)->spawn(position, velocity, parent, mBulletTextures[type]);
 
 	// Move this bullet to the back of the cache
-	list<BulletEntity*>::iterator newFront = front;
+	auto newFront = front;
 	advance(newFront, 1);
 	rotate(front, newFront, mBulletCache.end());
 }

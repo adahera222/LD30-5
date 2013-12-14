@@ -21,8 +21,15 @@ int App::run()
 	new BulletManager;
 
 	// Create a test scene
-	PlayerEntity* player = EntityManager::inst().createPlayer(Vec2(400, 500), 1);
-	PlayerEntity* player2 = EntityManager::inst().createPlayer(Vec2(400, 100), 1);
+	EntityManager::inst().createPlayer(Vec2(400, 500), 1);
+
+	for (int y = -1000; y <= 0; y += 200)
+	{
+		for (int x = 100; x < 800; x += 200)
+		{
+			EntityManager::inst().createEnemy(Vec2(x, y), 50.0f);
+		}
+	}
 
 	// Run the program as long as the window is open
 	sf::Clock clock;

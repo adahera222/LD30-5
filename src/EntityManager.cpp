@@ -11,33 +11,33 @@ EntityManager::~EntityManager()
 {
 }
 
-PlayerEntity* EntityManager::createPlayer(const Vec2& position, uint shipID)
+shared_ptr<PlayerEntity> EntityManager::createPlayer(const Vec2& position, uint shipID)
 {
-	PlayerEntity* newPlayer = new PlayerEntity(position, shipID);
+	shared_ptr<PlayerEntity> newPlayer(new PlayerEntity(position, shipID));
 	mEntities.push_back(newPlayer);
 	return newPlayer;
 }
 
-BulletEntity* EntityManager::createBullet()
+shared_ptr<EnemyEntity> EntityManager::createEnemy(const Vec2& position, float speed)
 {
-	BulletEntity* newBullet = new BulletEntity;
+	shared_ptr<EnemyEntity> newEnemy(new EnemyEntity(position, speed));
+	mEntities.push_back(newEnemy);
+	return newEnemy;
+}
+
+shared_ptr<BulletEntity> EntityManager::createBullet()
+{
+	shared_ptr<BulletEntity> newBullet(new BulletEntity);
 	mBulletEntities.push_back(newBullet);
 	return newBullet;
 }
 
-void EntityManager::destroyEntity(Entity* ent)
+void EntityManager::destroyEntity(shared_ptr<Entity> ent)
 {
-	if (dynamic_cast<BulletEntity*>(ent))
-	{
-		assert(find(mBulletEntities.begin(), mBulletEntities.end(), ent) != mBulletEntities.end());
+	if (dynamic_pointer_cast<BulletEntity>(ent) != shared_ptr<BulletEntity>())
 		mBulletEntities.erase(remove(mBulletEntities.begin(), mBulletEntities.end(), ent), mBulletEntities.end());
-	}
 	else
-	{
-		assert(find(mEntities.begin(), mEntities.end(), ent) != mEntities.end());
 		mEntities.erase(remove(mEntities.begin(), mEntities.end(), ent), mEntities.end());
-	}
-	delete ent;
 }
 
 void EntityManager::updateAll(float dt)
@@ -49,23 +49,22 @@ void EntityManager::updateAll(float dt)
 		(*i)->update(dt);
 
 	// Detect collisions
-	for (auto i = mEntities.begin(); i != mEntities.end(); ++i)
+	vector<shared_ptr<Entity>> currentEntities = mEntities;
+	for (auto i = currentEntities.begin(); i != currentEntities.end(); ++i)
 	{
 		// Entity on Entity
-		for (auto j = mEntities.begin(); j != mEntities.end(); ++j)
+		for (auto j = i + 1; j != currentEntities.end(); ++j)
 		{
-			if (*i != *j)
+			bool isIntersecting = false;
+			if (dynamic_pointer_cast<PlayerEntity>(*i) != shared_ptr<PlayerEntity>() ||
+				dynamic_pointer_cast<PlayerEntity>(*j) != shared_ptr<PlayerEntity>())
+				isIntersecting = Collision::CircleTest((*i)->getSprite(), (*j)->getSprite());
+			else
+				isIntersecting = Collision::BoundingBoxTest((*i)->getSprite(), (*j)->getSprite());
+			if (isIntersecting)
 			{
-				bool isIntersecting = false;
-				if (dynamic_cast<PlayerEntity*>(*i) || dynamic_cast<PlayerEntity*>(*j))
-					isIntersecting = Collision::CircleTest((*i)->getSprite(), (*j)->getSprite());
-				else
-					isIntersecting = Collision::BoundingBoxTest((*i)->getSprite(), (*j)->getSprite());
-				if (isIntersecting)
-				{
-					(*i)->onCollision(*j);
-					(*j)->onCollision(*i);
-				}
+				(*i)->onCollision(*j);
+				(*j)->onCollision(*i);
 			}
 		}
 
@@ -75,7 +74,7 @@ void EntityManager::updateAll(float dt)
 			if ((*j)->isActive() && *i != (*j)->getParent())
 			{
 				bool isIntersecting = false;
-				if (dynamic_cast<PlayerEntity*>(*i))
+				if (dynamic_pointer_cast<PlayerEntity>(*i) != shared_ptr<PlayerEntity>())
 					isIntersecting = Collision::CircleTest((*i)->getSprite(), (*j)->getSprite());
 				else
 					isIntersecting = Collision::BoundingBoxTest((*i)->getSprite(), (*j)->getSprite());
@@ -89,22 +88,22 @@ void EntityManager::updateAll(float dt)
 	}
 }
 
-vector<Entity*>::iterator EntityManager::getEntitiesBegin()
+vector<shared_ptr<Entity>>::iterator EntityManager::getEntitiesBegin()
 {
 	return mEntities.begin();
 }
 
-vector<Entity*>::iterator EntityManager::getEntitiesEnd()
+vector<shared_ptr<Entity>>::iterator EntityManager::getEntitiesEnd()
 {
 	return mEntities.end();
 }
 
-vector<BulletEntity*>::iterator EntityManager::getBulletEntitiesBegin()
+vector<shared_ptr<BulletEntity>>::iterator EntityManager::getBulletEntitiesBegin()
 {
 	return mBulletEntities.begin();
 }
 
-vector<BulletEntity*>::iterator EntityManager::getBulletEntitiesEnd()
+vector<shared_ptr<BulletEntity>>::iterator EntityManager::getBulletEntitiesEnd()
 {
 	return mBulletEntities.end();
 }

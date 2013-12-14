@@ -11,7 +11,7 @@ public:
 
 	virtual void update(float dt) = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
-	virtual void onCollision(Entity* other) = 0;
+	virtual void onCollision(shared_ptr<Entity> other) = 0;
 
 	virtual sf::Sprite& getSprite() = 0;
 

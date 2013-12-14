@@ -18,11 +18,11 @@ public:
 	BulletManager();
 	~BulletManager();
 
-	void spawn(const Vec2& position, const Vec2& velocity, Entity* parent, BulletType type);
+	void spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, BulletType type);
 
 private:
 	map<BulletType, sf::Texture> mBulletTextures;
-	list<BulletEntity*> mBulletCache;
+	list<shared_ptr<BulletEntity>> mBulletCache;
 
 };
 

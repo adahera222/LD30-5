@@ -16,6 +16,7 @@
     <ClInclude Include="src\BulletManager.h" />
     <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\Common.h" />
+    <ClInclude Include="src\EnemyEntity.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EntityManager.h" />
     <ClInclude Include="src\PlayerEntity.h" />
@@ -27,6 +28,7 @@
     <ClCompile Include="src\BulletEntity.cpp" />
     <ClCompile Include="src\BulletManager.cpp" />
     <ClCompile Include="src\Collision.cpp" />
+    <ClCompile Include="src\EnemyEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityManager.cpp" />
     <ClCompile Include="src\Main.cpp" />

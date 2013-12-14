@@ -5,23 +5,8 @@
 
 int main(int argc, char** argv)
 {
-	int exitFlag = EXIT_SUCCESS;
-
-	try
-	{
-		App app;
-		app.run();
-	}
-	catch (std::exception& e)
-	{
-		// Display a dialog box
-		stringstream ss;
-		ss << "An unhandled exception has been thrown!" << endl << endl << "Message: " << e.what();
-		MessageBoxA(NULL, ss.str().c_str(), "Exception", MB_OK);
-		exitFlag = EXIT_FAILURE;
-	}
-
-	return exitFlag;
+	App app;
+	return app.run();
 }
 
 // Win32 Main

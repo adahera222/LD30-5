@@ -11,21 +11,21 @@ public:
 	BulletEntity();
 	~BulletEntity();
 
-	void spawn(const Vec2& position, const Vec2& velocity, Entity* parent, sf::Texture& texture);
+	void spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, sf::Texture& texture);
 	void despawn();
 
 	virtual void update(float dt);
 	virtual void render(sf::RenderWindow& window);
-	virtual void onCollision(Entity* other);
+	virtual void onCollision(shared_ptr<Entity> other);
 	virtual sf::Sprite& getSprite();
 
-	Entity* getParent();
+	shared_ptr<Entity> getParent();
 	bool isActive() const;
 
 private:
 	Vec2 mVelocity;
 	float mRotation;
-	Entity* mParent;
+	weak_ptr<Entity> mParent;
 
 	bool mActive;
 

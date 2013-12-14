@@ -9,8 +9,11 @@ public:
 	Entity(const Vec2& position);
 	virtual ~Entity();
 
-	virtual void update(float dt);
-	virtual void render(sf::RenderWindow& window);
+	virtual void update(float dt) = 0;
+	virtual void render(sf::RenderWindow& window) = 0;
+	virtual void onCollision(Entity* other) = 0;
+
+	virtual sf::Sprite& getSprite() = 0;
 
 	void setPosition(const Vec2& position);
 	const Vec2& getPosition() const;

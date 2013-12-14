@@ -12,6 +12,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App.h" />
+    <ClInclude Include="src\BulletEntity.h" />
+    <ClInclude Include="src\BulletManager.h" />
+    <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EntityManager.h" />
@@ -20,6 +23,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\BulletEntity.cpp" />
+    <ClCompile Include="src\BulletManager.cpp" />
+    <ClCompile Include="src\Collision.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityManager.cpp" />
     <ClCompile Include="src\Main.cpp" />

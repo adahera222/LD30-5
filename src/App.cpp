@@ -4,6 +4,7 @@
 #include "App.h"
 #include "Renderer.h"
 #include "EntityManager.h"
+#include "BulletManager.h"
 
 App::App()
 {
@@ -17,9 +18,11 @@ int App::run()
 {
 	new Renderer(800, 600, false);
 	new EntityManager;
+	new BulletManager;
 
 	// Create a test scene
-	PlayerEntity* player = EntityManager::inst().createPlayer(Vec2(400, 300), 1);
+	PlayerEntity* player = EntityManager::inst().createPlayer(Vec2(400, 500), 1);
+	PlayerEntity* player2 = EntityManager::inst().createPlayer(Vec2(400, 100), 1);
 
 	// Run the program as long as the window is open
 	sf::Clock clock;
@@ -36,6 +39,11 @@ int App::run()
 		EntityManager::inst().updateAll(time);
 		Renderer::inst().render();
 	}
+
+	// Tear down
+	BulletManager::release();
+	EntityManager::release();
+	Renderer::release();
 
 	return EXIT_SUCCESS;
 }

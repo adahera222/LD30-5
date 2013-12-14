@@ -22,6 +22,7 @@ using namespace std;
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Window.hpp>
+#include "Collision.h"
 
 // Windows
 #define WIN32_LEAN_AND_MEAN

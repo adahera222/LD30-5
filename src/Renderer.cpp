@@ -23,6 +23,11 @@ void Renderer::processEvents()
 	{
 		switch (event.type)
 		{
+		case sf::Event::KeyPressed:
+			if (event.key.code == sf::Keyboard::Escape)
+				mWindow.close();
+			break;
+
 		case sf::Event::Closed:
 			mWindow.close();
 			break;
@@ -39,6 +44,8 @@ void Renderer::render()
 
 	// Draw entities
 	for (auto i = EntityManager::inst().getEntitiesBegin(); i != EntityManager::inst().getEntitiesEnd(); ++i)
+		(*i)->render(mWindow);
+	for (auto i = EntityManager::inst().getBulletEntitiesBegin(); i != EntityManager::inst().getBulletEntitiesEnd(); ++i)
 		(*i)->render(mWindow);
 
 	mWindow.display();

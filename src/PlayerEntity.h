@@ -20,11 +20,17 @@ public:
 
 	virtual void update(float dt);
 	virtual void render(sf::RenderWindow& window);
+	virtual void onCollision(Entity* other);
+	virtual sf::Sprite& getSprite();
 
 	void _hitShield(const Vec2& direction);
 
 private:
 	uint mShipID;
+
+	// Shooting
+	vector<Vec2> mGunPoints;
+	sf::Clock mGunTimer;
 
 	// Velocity
 	Vec2 mVelocity;

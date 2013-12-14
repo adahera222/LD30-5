@@ -2,6 +2,7 @@
 // Copyright (c) David Avedissian 2013
 #include "Common.h"
 #include "PlayerEntity.h"
+#include "BulletManager.h"
 
 PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	Entity(position),
@@ -12,6 +13,12 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 		throw std::exception("Failed to load player texture");
 	if (!mShieldTexture.loadFromFile("media/shield.png"))
 		throw std::exception("Failed to load shield texture");
+
+	// Load gun points
+	mGunPoints.push_back(Vec2(-10.0f, -16.0f));
+	mGunPoints.push_back(Vec2(10.0f, -16.0f));
+	mGunPoints.push_back(Vec2(-22.0f, -8.0f));
+	mGunPoints.push_back(Vec2(22.0f, -8.0f));
 
 	// Set up ship sprite
 	Vec2 shipTextureSize((float)mShipTexture.getSize().x, (float)mShipTexture.getSize().y);
@@ -26,7 +33,7 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 		shield.sprite.setTexture(mShieldTexture);
 		shield.sprite.setOrigin(shieldTextureSize * 0.5f);
 		shield.visibility = 0.0f;
-		shield.rotation = random(0.0f, 360.0f);
+		shield.rotation = 0.0f;
 		mShieldSprites.push_back(shield);
 	}
 }
@@ -78,6 +85,17 @@ void PlayerEntity::update(float dt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		targetVelocity.x = MAX_VELOCITY;
 
+	// Shooting
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		if (mGunTimer.getElapsedTime().asSeconds() > 0.1f)
+		{
+			for (auto i = mGunPoints.begin(); i != mGunPoints.end(); ++i)
+				BulletManager::inst().spawn(mPosition + (*i), Vec2(0.0f, -1000.0f), this, BT_PLAYER_COMMON);
+			mGunTimer.restart();
+		}
+	}
+
 	// Update velocity
 	mVelocity.x = step(mVelocity.x, targetVelocity.x, ACCELERATION * dt);
 	mVelocity.y = step(mVelocity.y, targetVelocity.y, ACCELERATION * dt);
@@ -113,6 +131,24 @@ void PlayerEntity::render(sf::RenderWindow& window)
 	}
 }
 
+void PlayerEntity::onCollision(Entity* other)
+{
+	BulletEntity* bullet = dynamic_cast<BulletEntity*>(other);
+	if (bullet)
+	{
+		// Hit the shield
+		_hitShield(other->getPosition() - mPosition);
+
+		// Despawn
+		bullet->despawn();
+	}
+}
+
+sf::Sprite& PlayerEntity::getSprite()
+{
+	return mShipSprite;
+}
+
 void PlayerEntity::_hitShield(const Vec2& direction)
 {
 	// Take the front shield
@@ -120,7 +156,7 @@ void PlayerEntity::_hitShield(const Vec2& direction)
 
 	// Flare that shield up
 	(*front).visibility = 1.0f;
-	(*front).rotation = atan2(direction.y, direction.x) * RAD_TO_DEG;
+	(*front).rotation = atan2(direction.y, direction.x) * RAD_TO_DEG + 90.0f;
 
 	// Move that shield to the back and shuffle the remaining shield elements forward by 1
 	list<Shield>::iterator newFront = front;

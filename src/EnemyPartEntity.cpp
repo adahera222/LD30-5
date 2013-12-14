@@ -38,7 +38,7 @@ void EnemyPartEntity::update(float dt)
 	// Aim at the player
 	if (!mDesc.fixed)
 	{
-		float rotation = atan2(playerDirection.y, playerDirection.x) * RAD_TO_DEG + 90.0f;
+		float rotation = atan2(playerDirection.y, playerDirection.x) * RAD_TO_DEG - 90.0f;
 		mSprite.setRotation(rotation + mDesc.rotation);
 	}
 

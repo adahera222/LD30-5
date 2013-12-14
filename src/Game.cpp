@@ -18,10 +18,9 @@ int Game::run()
 
 	sf::Clock scoreTimer;
 	sf::Clock spawnTimer;
-	sf::Clock bossWaitTimer;
-	bool bossSpawned = false;
+	weak_ptr<EnemyEntity> boss = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
 	int score = 0;
-	int rowSize = 2;
+	int rowSize = 3;
 	float spawnTime = 5.0f;
 
 	// Run the program as long as the window is open
@@ -44,21 +43,18 @@ int Game::run()
 			if (score < 10000)
 				rowSize = 2 + score / 1000;
 
-			// Spawn the big boss
-			if (score == 6000)
-			{
-				bossWaitTimer.restart();
-				bossSpawned = true;
-				EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2 - 64.0f, -64.0f), "boss1");
-			}
+			// Spawn boss at some time
+
 		}
-		if (spawnTimer.getElapsedTime().asSeconds() > 4.0f / getTimeRate() &&
-			(!bossSpawned || bossWaitTimer.getElapsedTime().asSeconds() > 10.0f / getTimeRate()))
+		if (boss.lock() == shared_ptr<EnemyEntity>())
 		{
-			string enemy = rowSize % 2 == 0 ? "enemy2" : "enemy1";
-			for (int x = 1; x < (rowSize + 1); x++)
-				EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1) - 16.0f, -16.0f), enemy);
-			spawnTimer.restart();
+			if (spawnTimer.getElapsedTime().asSeconds() > 4.0f / getTimeRate())
+			{
+				string enemy = rowSize % 2 == 0 ? "enemy2" : "enemy1";
+				for (int x = 1; x < (rowSize + 1); x++)
+					EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1), -16.0f), enemy);
+				spawnTimer.restart();
+			}
 		}
 
 		// Run a frame

@@ -51,7 +51,7 @@ void EnemyEntity::onCollision(shared_ptr<Entity> other)
 	if (bullet != shared_ptr<BulletEntity>())
 	{
 		// Take damage
-		damage(other->getPosition() - mPosition, 50);
+		damage(other->getPosition() - mPosition, 5);
 
 		// Despawn bullet
 		bullet->despawn();

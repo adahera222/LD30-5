@@ -5,7 +5,7 @@
 #include "BulletManager.h"
 
 PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
-	ShipEntity(position, 1000),
+	DamageableEntity(position, 1000),
 	mShipID(shipID)
 {
 	// Load textures
@@ -59,10 +59,15 @@ float step(float x, float t, float s)
 
 void PlayerEntity::damage(const Vec2& direction, uint damageTaken)
 {
-	ShipEntity::damage(direction, damageTaken);
+	DamageableEntity::damage(direction, damageTaken);
 
 	// Flare up shield
 	_hitShield(direction);
+}
+
+bool PlayerEntity::inBulletTime() const
+{
+	return mBulletTime;
 }
 
 void PlayerEntity::update(float dt)
@@ -80,13 +85,16 @@ void PlayerEntity::update(float dt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		mVelocity.x = MAX_VELOCITY;
 
+	// Bullet time
+	mBulletTime = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
 	// Shooting
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		if (mGunTimer.getElapsedTime().asSeconds() > 0.1f)
+		if (mGunTimer.getElapsedTime().asSeconds() > 0.1f / Game::getTimeRate())
 		{
 			for (auto i = mGunPoints.begin(); i != mGunPoints.end(); ++i)
-				BulletManager::inst().spawn(mPosition + (*i), Vec2(0.0f, -1000.0f), shared_from_this(), BT_PLAYER_COMMON);
+				BulletManager::inst().spawn(mPosition + (*i), Vec2(0.0f, -500.0f), shared_from_this(), BT_PLAYER_COMMON, true);
 			mGunTimer.restart();
 		}
 	}

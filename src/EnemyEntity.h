@@ -3,16 +3,18 @@
 #ifndef EnemyEntity_h__
 #define EnemyEntity_h__
 
-#include "ShipEntity.h"
+#include "DameageableEntity.h"
+#include "EnemyPartEntity.h"
 
-class EnemyEntity : public ShipEntity, public enable_shared_from_this<EnemyEntity>
+class EnemyEntity : public DamageableEntity, public enable_shared_from_this<EnemyEntity>
 {
 public:
 	EnemyEntity(const Vec2& position, float speed);
 	virtual ~EnemyEntity();
 
 	// Sub-parts
-	// TODO
+	void _setupParts();
+	virtual void _addPart(const Vec2& position, const string& texture, int health);
 
 	// Inherited from ShipEntity
 	virtual void damage(const Vec2& direction, uint damageTaken);
@@ -23,6 +25,9 @@ public:
 
 private:
 	float mSpeed;
+
+	// Sub parts
+	vector<shared_ptr<EnemyPartEntity>> mParts;
 
 	sf::Texture mTexture; // TODO handle this in a texture manager
 	sf::Sprite mSprite;

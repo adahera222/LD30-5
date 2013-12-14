@@ -4,13 +4,11 @@
 #define App_h__
 
 // Main class that handles an application
-class App
+class Game
 {
 public:
-	App();
-	~App();
-
-	int run();
+	static int run();
+	static float getTimeRate();
 
 };
 

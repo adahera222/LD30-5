@@ -24,7 +24,7 @@ void BulletEntity::spawn(const Vec2& position, const Vec2& velocity, shared_ptr<
 	mRotation = atan2(velocity.y, velocity.x) * RAD_TO_DEG + 90.0f;
 	mParent = parent;
 
-	Vec2 textureSize(texture.getSize().x, texture.getSize().y);
+	Vec2 textureSize((float)texture.getSize().x, (float)texture.getSize().y);
 	mTexturePtr = &texture;
 	mSprite.setTexture(*mTexturePtr);
 	mSprite.setOrigin(textureSize * 0.5f);

@@ -45,7 +45,9 @@ void Renderer::render()
 	// Draw entities
 	for (auto i = EntityManager::inst().getEntitiesBegin(); i != EntityManager::inst().getEntitiesEnd(); ++i)
 		(*i)->render(mWindow);
-	for (auto i = EntityManager::inst().getBulletEntitiesBegin(); i != EntityManager::inst().getBulletEntitiesEnd(); ++i)
+	for (auto i = EntityManager::inst().getPlayerBulletsBegin(); i != EntityManager::inst().getPlayerBulletsEnd(); ++i)
+		(*i)->render(mWindow);
+	for (auto i = EntityManager::inst().getNonPlayerBulletsBegin(); i != EntityManager::inst().getNonPlayerBulletsEnd(); ++i)
 		(*i)->render(mWindow);
 
 	mWindow.display();

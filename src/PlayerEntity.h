@@ -3,7 +3,7 @@
 #ifndef PlayerEntity_h__
 #define PlayerEntity_h__
 
-#include "ShipEntity.h"
+#include "DameageableEntity.h"
 
 struct Shield
 {
@@ -12,11 +12,13 @@ struct Shield
 	float rotation;
 };
 
-class PlayerEntity : public ShipEntity, public enable_shared_from_this<PlayerEntity>
+class PlayerEntity : public DamageableEntity, public enable_shared_from_this<PlayerEntity>
 {
 public:
 	PlayerEntity(const Vec2& position, uint shipID);
 	virtual ~PlayerEntity();
+
+	bool inBulletTime() const;
 
 	// Inherited from ShipEntity
 	virtual void damage(const Vec2& direction, uint damageTaken);
@@ -29,6 +31,9 @@ public:
 
 private:
 	uint mShipID;
+
+	// Bullet Time
+	bool mBulletTime;
 
 	// Shooting
 	vector<Vec2> mGunPoints;

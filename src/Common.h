@@ -46,4 +46,7 @@ void randomSeed(uint seed);
 float random(float min, float max);
 int random(int min, int max);
 
+// Game
+#include "Game.h"
+
 #endif // Common_h__

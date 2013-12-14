@@ -14,24 +14,29 @@ BulletManager::BulletManager()
 	mBulletTextures.insert(make_pair(BT_PLAYER_COMMON, playerBullet));
 
 	// Create initial bullets
-	for (uint i = 0; i < 100; ++i)
-	{
-		shared_ptr<BulletEntity> ent = EntityManager::inst().createBullet();
-		mBulletCache.push_back(ent);
-	}
+	for (uint i = 0; i < 50; ++i)
+		mPlayerBulletCache.push_back(EntityManager::inst().createBullet(true));
+	for (uint i = 0; i < 500; ++i)
+		mNonPlayerBulletCache.push_back(EntityManager::inst().createBullet(false));
 }
 
 BulletManager::~BulletManager()
 {
-	for (auto i = mBulletCache.begin(); i != mBulletCache.end(); ++i)
+	for (auto i = mNonPlayerBulletCache.begin(); i != mNonPlayerBulletCache.end(); ++i)
 		EntityManager::inst().destroyEntity(*i);
-	mBulletCache.clear();
+	mNonPlayerBulletCache.clear();
+
+	for (auto i = mPlayerBulletCache.begin(); i != mPlayerBulletCache.end(); ++i)
+		EntityManager::inst().destroyEntity(*i);
+	mPlayerBulletCache.clear();
 }
 
-void BulletManager::spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, BulletType type)
+void BulletManager::spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, BulletType type, bool friendly)
 {
+	auto& cache = friendly ? mPlayerBulletCache : mNonPlayerBulletCache;
+
 	// Take first bullet
-	auto front = mBulletCache.begin();
+	auto front = cache.begin();
 
 	// Spawn it
 	(*front)->spawn(position, velocity, parent, mBulletTextures[type]);
@@ -39,5 +44,5 @@ void BulletManager::spawn(const Vec2& position, const Vec2& velocity, shared_ptr
 	// Move this bullet to the back of the cache
 	auto newFront = front;
 	advance(newFront, 1);
-	rotate(front, newFront, mBulletCache.end());
+	rotate(front, newFront, cache.end());
 }

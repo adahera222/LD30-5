@@ -1,12 +1,11 @@
 // Ludum Dare 28 Entry
 // Copyright (c) David Avedissian 2013
 #include "Common.h"
-#include "App.h"
+#include "Game.h"
 
 int main(int argc, char** argv)
 {
-	App app;
-	return app.run();
+	return Game::run();
 }
 
 // Win32 Main

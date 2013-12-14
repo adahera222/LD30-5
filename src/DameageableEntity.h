@@ -5,11 +5,11 @@
 
 #include "Entity.h"
 
-class ShipEntity : public Entity
+class DamageableEntity : public Entity
 {
 public:
-	ShipEntity(const Vec2& position, int health);
-	virtual ~ShipEntity();
+	DamageableEntity(const Vec2& position, int health);
+	virtual ~DamageableEntity();
 
 	virtual void damage(const Vec2& direction, uint damageTaken);
 

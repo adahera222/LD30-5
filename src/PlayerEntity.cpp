@@ -35,8 +35,25 @@ PlayerEntity::~PlayerEntity()
 {
 }
 
+float step(float x, float t, float s)
+{
+	if (t > x)
+	{
+		x += s;
+		return t > x ? x : t;
+	}
+	if (t < x)
+	{
+		x -= s;
+		return t < x ? x : t;
+	}
+	return x;	
+}
+
 void PlayerEntity::update(float dt)
 {
+	// TEST CODE
+	//////////////////
 	static sf::Clock clock;
 	if (clock.getElapsedTime() > sf::seconds(0.2f))
 	{
@@ -46,6 +63,25 @@ void PlayerEntity::update(float dt)
 			clock.restart();
 		}
 	}
+	//////////////////
+
+	// Handle controls
+	static const float MAX_VELOCITY = 125.0f;
+	static const float ACCELERATION = 1000.0f;
+	Vec2 targetVelocity(0.0f, 0.0f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		targetVelocity.y = -MAX_VELOCITY;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		targetVelocity.y = MAX_VELOCITY;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		targetVelocity.x = -MAX_VELOCITY;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		targetVelocity.x = MAX_VELOCITY;
+
+	// Update velocity
+	mVelocity.x = step(mVelocity.x, targetVelocity.x, ACCELERATION * dt);
+	mVelocity.y = step(mVelocity.y, targetVelocity.y, ACCELERATION * dt);
+	mPosition += mVelocity * dt;
 
 	// Fade out shields
 	for (auto i = mShieldSprites.begin(); i != mShieldSprites.end(); ++i)

@@ -26,6 +26,10 @@ public:
 private:
 	uint mShipID;
 
+	// Velocity
+	Vec2 mVelocity;
+
+	// Rendering
 	sf::Texture mShipTexture;
 	sf::Texture mShieldTexture;
 

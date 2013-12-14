@@ -3,7 +3,7 @@
 #ifndef PlayerEntity_h__
 #define PlayerEntity_h__
 
-#include "Entity.h"
+#include "ShipEntity.h"
 
 struct Shield
 {
@@ -12,12 +12,14 @@ struct Shield
 	float rotation;
 };
 
-class PlayerEntity : public Entity
+class PlayerEntity : public ShipEntity
 {
 public:
 	PlayerEntity(const Vec2& position, uint shipID);
 	virtual ~PlayerEntity();
 
+	// Inherited from ShipEntity
+	virtual void damage(const Vec2& direction, uint damageTaken);
 	virtual void update(float dt);
 	virtual void render(sf::RenderWindow& window);
 	virtual void onCollision(Entity* other);

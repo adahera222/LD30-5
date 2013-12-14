@@ -5,7 +5,7 @@
 #include "BulletManager.h"
 
 PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
-	Entity(position),
+	ShipEntity(position, 1000),
 	mShipID(shipID)
 {
 	// Load textures
@@ -57,21 +57,17 @@ float step(float x, float t, float s)
 	return x;	
 }
 
+void PlayerEntity::damage(const Vec2& direction, uint damageTaken)
+{
+	// Call base class function
+	ShipEntity::damage(direction, damageTaken);
+
+	// Flare up shield
+	_hitShield(direction);
+}
+
 void PlayerEntity::update(float dt)
 {
-	// TEST CODE
-	//////////////////
-	static sf::Clock clock;
-	if (clock.getElapsedTime() > sf::seconds(0.2f))
-	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
-		{
-			_hitShield(Vec2(random(-1.0f, 1.0f), random(-1.0f, 1.0f)));
-			clock.restart();
-		}
-	}
-	//////////////////
-
 	// Handle controls
 	static const float MAX_VELOCITY = 125.0f;
 	static const float ACCELERATION = 1000.0f;
@@ -136,10 +132,10 @@ void PlayerEntity::onCollision(Entity* other)
 	BulletEntity* bullet = dynamic_cast<BulletEntity*>(other);
 	if (bullet)
 	{
-		// Hit the shield
-		_hitShield(other->getPosition() - mPosition);
+		// Take damage
+		damage(other->getPosition() - mPosition, 100);
 
-		// Despawn
+		// Despawn the bullet
 		bullet->despawn();
 	}
 }

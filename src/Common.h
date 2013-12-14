@@ -1,7 +1,5 @@
-/*
-	Ludum Dare 28 Entry
-	Copyright (c) David Avedissian 2013
-*/
+// Ludum Dare 28 Entry
+// Copyright (c) David Avedissian 2013
 #ifndef Common_h__
 #define Common_h__
 
@@ -20,6 +18,7 @@ using namespace std;
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 #include <SFML/Window.hpp>
 
 // Windows
@@ -27,11 +26,9 @@ using namespace std;
 #define NOMINMAX
 #include <Windows.h>
 
-// Singleton
-#include "Singleton.h"
-
-// Common type-defs
+// Common typedefs
 typedef unsigned int uint;
 typedef unsigned long ulong;
+typedef sf::Vector2f Vec2;
 
 #endif // Common_h__

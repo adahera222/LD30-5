@@ -1,9 +1,8 @@
-/*
-	Ludum Dare 28 Entry
-	Copyright (c) David Avedissian 2013
-*/
+// Ludum Dare 28 Entry
+// Copyright (c) David Avedissian 2013
 #include "Common.h"
 #include "Renderer.h"
+#include "EntityManager.h"
 
 Renderer::Renderer(uint width, uint height, bool fullscreen) :
 	mWindow(sf::VideoMode(width, height), "LD28")
@@ -16,23 +15,36 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::render()
-{
-}
-
 void Renderer::processEvents()
 {
 	// Check all the window's events that were triggered since the last iteration of the loop
 	sf::Event event;
 	while (mWindow.pollEvent(event))
 	{
-		// "close requested" event: we close the window
-		if (event.type == sf::Event::Closed)
+		switch (event.type)
+		{
+		case sf::Event::Closed:
 			mWindow.close();
+			break;
+
+		default:
+			break;
+		}
 	}
 }
 
-sf::Window& Renderer::getWindow()
+void Renderer::render()
+{
+	mWindow.clear(sf::Color::Black);
+
+	// Draw entities
+	for (auto i = EntityManager::inst().getEntitiesBegin(); i != EntityManager::inst().getEntitiesEnd(); ++i)
+		(*i)->render();
+
+	mWindow.display();
+}
+
+sf::RenderWindow& Renderer::getWindow()
 {
 	return mWindow;
 }

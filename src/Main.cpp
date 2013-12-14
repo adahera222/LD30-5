@@ -3,26 +3,27 @@
 	Copyright (c) David Avedissian 2013
 */
 #include "Common.h"
-#include "Main.h"
+#include "App.h"
 
 int main(int argc, char** argv)
 {
-	sf::Window window(sf::VideoMode(800, 600), "LD28");
+	int exitFlag = EXIT_SUCCESS;
 
-	// Run the program as long as the window is open
-	while (window.isOpen())
+	try
 	{
-		// check all the window's events that were triggered since the last iteration of the loop
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
+		App app;
+		app.run();
+	}
+	catch (std::exception& e)
+	{
+		// Display a dialog box
+		stringstream ss;
+		ss << "An unhandled exception has been thrown!" << endl << endl << "Message: " << e.what();
+		MessageBoxA(NULL, ss.str().c_str(), "Exception", MB_OK);
+		exitFlag = EXIT_FAILURE;
 	}
 
-	return 0;
+	return exitFlag;
 }
 
 // Win32 Main

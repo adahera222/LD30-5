@@ -72,21 +72,6 @@ PlayerEntity::~PlayerEntity()
 {
 }
 
-float step(float x, float t, float s)
-{
-	if (t > x)
-	{
-		x += s;
-		return t > x ? x : t;
-	}
-	if (t < x)
-	{
-		x -= s;
-		return t < x ? x : t;
-	}
-	return x;	
-}
-
 void PlayerEntity::damage(const Vec2& direction, uint damageTaken)
 {
 	DamageableEntity::damage(direction, damageTaken);
@@ -111,11 +96,18 @@ void PlayerEntity::_specialAttack()
 			shared_ptr<DamageableEntity> entity = (*i).entity.lock();
 			if (entity != shared_ptr<DamageableEntity>())
 				entities.push_back(entity);
+			(*i).hasLock = false;
+			(*i).lockProgress = 0.0f;
 		}
 	}
 
 	// Do something depending on currently selected player
 	// TODO: script this
+
+	// Player 1
+	// Fire a savlo of missiles from the back of the ship
+	for (auto i = entities.begin(); i != entities.end(); ++i)
+		EntityManager::inst().createMissileWeapon(mPosition, *i);
 }
 
 void PlayerEntity::_hitShield(const Vec2& direction)
@@ -187,9 +179,7 @@ void PlayerEntity::update(float dt)
 
 	// Special attack
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && noLocks > 0)
-	{
 		_specialAttack();
-	}
 
 	// Update velocity
 	mVelocity.x = step(mVelocity.x, targetVelocity.x, ACCELERATION * dt);
@@ -223,18 +213,27 @@ void PlayerEntity::update(float dt)
 				if (distanceSq < targetRadiusSq)
 				{
 					// Make sure this entity hasn't already been locked onto
-					bool beenLocked = false;
-					for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
+					bool lockedOn = false;
+					for (auto l = mLocks.begin(); l != mLocks.end(); ++l)
 					{
-						if ((*i).entity.lock() == ent)
+						if ((*l).entity.lock() == ent)
 						{
-							beenLocked = true;
+							lockedOn = true;
 							break;
+						}
+						shared_ptr<EnemyPartEntity> part = dynamic_pointer_cast<EnemyPartEntity>(ent);
+						if (part != shared_ptr<EnemyPartEntity>())
+						{
+							if ((*l).entity.lock() == part->getParent().lock())
+							{
+								lockedOn = true;
+								break;
+							}
 						}
 					}
 
 					// Find a free lock
-					if (!beenLocked)
+					if (!lockedOn)
 					{
 						for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
 						{

@@ -89,6 +89,13 @@ shared_ptr<BulletEntity> EntityManager::createBullet(bool friendly)
 	return newBullet;
 }
 
+shared_ptr<MissileSavloWeapon> EntityManager::createMissileWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target)
+{
+	shared_ptr<MissileSavloWeapon> newMissileWeapon(new MissileSavloWeapon(startingPosition, target));
+	mSpecialWeapons.push_back(newMissileWeapon);
+	return newMissileWeapon;
+}
+
 shared_ptr<PlayerEntity> EntityManager::getPlayer() const
 {
 	return mPlayer;
@@ -96,28 +103,51 @@ shared_ptr<PlayerEntity> EntityManager::getPlayer() const
 
 void EntityManager::destroyEntity(shared_ptr<Entity> ent)
 {
-	if (dynamic_pointer_cast<BulletEntity>(ent) != shared_ptr<BulletEntity>())
-	{
-		mPlayerBullets.erase(remove(mPlayerBullets.begin(), mPlayerBullets.end(), ent), mPlayerBullets.end());
-		mNonPlayerBullets.erase(remove(mNonPlayerBullets.begin(), mNonPlayerBullets.end(), ent), mNonPlayerBullets.end());
-	}
-	else
-	{
-		mEntities.erase(remove(mEntities.begin(), mEntities.end(), ent), mEntities.end());
-	}
+	shared_ptr<EnemyEntity> enemy = dynamic_pointer_cast<EnemyEntity>(ent);
+	if (enemy != shared_ptr<EnemyEntity>())
+		enemy->_onDestroy();
+	mSpecialWeapons.erase(remove(mSpecialWeapons.begin(), mSpecialWeapons.end(), ent), mSpecialWeapons.end());
+	mNonPlayerBullets.erase(remove(mNonPlayerBullets.begin(), mNonPlayerBullets.end(), ent), mNonPlayerBullets.end());
+	mPlayerBullets.erase(remove(mPlayerBullets.begin(), mPlayerBullets.end(), ent), mPlayerBullets.end());
+	mEntities.erase(remove(mEntities.begin(), mEntities.end(), ent), mEntities.end());
+}
+
+bool isOutside(const Vec2& position, bool aboveScreen = true)
+{
+	return position.x < 0.0f || position.x > Game::SCREEN_WIDTH || 
+		(aboveScreen && position.y < 0.0f) || position.y > Game::SCREEN_HEIGHT;
 }
 
 void EntityManager::updateAll(float dt)
 {
 	vector<shared_ptr<Entity>> currentEntities = mEntities;
+	vector<shared_ptr<SpecialWeapon>> specialWeapons = mSpecialWeapons;
 
 	// Update each entity
 	for (auto i = currentEntities.begin(); i != currentEntities.end(); ++i)
+	{
 		(*i)->update(dt);
+		if (isOutside((*i)->getPosition(), false))
+			destroyEntity(*i);
+	}
 	for (auto i = mPlayerBullets.begin(); i != mPlayerBullets.end(); ++i)
+	{
 		(*i)->update(dt);
+		if (isOutside((*i)->getPosition()))
+			(*i)->despawn();
+	}
 	for (auto i = mNonPlayerBullets.begin(); i != mNonPlayerBullets.end(); ++i)
+	{
 		(*i)->update(dt);
+		if (isOutside((*i)->getPosition()))
+			(*i)->despawn();
+	}
+	for (auto i = specialWeapons.begin(); i != specialWeapons.end(); ++i)
+	{
+		(*i)->update(dt);
+		if (isOutside((*i)->getPosition()))
+			destroyEntity(*i);
+	}
 
 	// Detect collisions between entities
 	for (auto i = currentEntities.begin(); i != currentEntities.end(); ++i)
@@ -125,25 +155,35 @@ void EntityManager::updateAll(float dt)
 		// Entity on Entity
 		for (auto j = i + 1; j != currentEntities.end(); ++j)
 		{
-			if (Collision::BoundingBoxTest((*i)->getSprite(), (*j)->getSprite()))
+			if (Collision::PixelPerfectTest((*i)->getSprite(), (*j)->getSprite()))
 			{
 				(*i)->onCollision(*j);
 				(*j)->onCollision(*i);
 			}
 		}
 
-		// Player Bullet on Entity
 		if (*i != mPlayer)
 		{
+			// Player Bullet on Entity
 			for (auto j = mPlayerBullets.begin(); j != mPlayerBullets.end(); ++j)
 			{
 				if ((*j)->isActive())
 				{
-					if (Collision::BoundingBoxTest((*i)->getSprite(), (*j)->getSprite()))
+					if (Collision::PixelPerfectTest((*i)->getSprite(), (*j)->getSprite()))
 					{
 						(*i)->onCollision(*j);
 						(*j)->onCollision(*i);
 					}
+				}
+			}
+
+			// Special Weapon on Entity
+			for (auto j = specialWeapons.begin(); j != specialWeapons.end(); ++j)
+			{
+				if (Collision::CircleTest((*i)->getSprite(), (*j)->getSprite()))
+				{
+					(*i)->onCollision(*j);
+					(*j)->onCollision(*i);
 				}
 			}
 		}
@@ -191,4 +231,14 @@ vector<shared_ptr<BulletEntity>>::iterator EntityManager::getNonPlayerBulletsBeg
 vector<shared_ptr<BulletEntity>>::iterator EntityManager::getNonPlayerBulletsEnd()
 {
 	return mNonPlayerBullets.end();
+}
+
+vector<shared_ptr<SpecialWeapon>>::iterator EntityManager::getSpecialWeaponsBegin()
+{
+	return mSpecialWeapons.begin();
+}
+
+vector<shared_ptr<SpecialWeapon>>::iterator EntityManager::getSpecialWeaponsEnd()
+{
+	return mSpecialWeapons.end();
 }

@@ -15,6 +15,7 @@ public:
 
 	// Sub-parts
 	void _setupParts();
+	void _onDestroy();
 
 	// Inherited from ShipEntity
 	virtual void damage(const Vec2& direction, uint damageTaken);

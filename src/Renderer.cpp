@@ -42,12 +42,14 @@ void Renderer::render()
 {
 	mWindow.clear(sf::Color::Black);
 
-	// Draw entities
+	// Draw everything
 	for (auto i = EntityManager::inst().getEntitiesBegin(); i != EntityManager::inst().getEntitiesEnd(); ++i)
 		(*i)->render(mWindow);
 	for (auto i = EntityManager::inst().getPlayerBulletsBegin(); i != EntityManager::inst().getPlayerBulletsEnd(); ++i)
 		(*i)->render(mWindow);
 	for (auto i = EntityManager::inst().getNonPlayerBulletsBegin(); i != EntityManager::inst().getNonPlayerBulletsEnd(); ++i)
+		(*i)->render(mWindow);
+	for (auto i = EntityManager::inst().getSpecialWeaponsBegin(); i != EntityManager::inst().getSpecialWeaponsEnd(); ++i)
 		(*i)->render(mWindow);
 
 	mWindow.display();

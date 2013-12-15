@@ -9,6 +9,7 @@ EnemyEntity::EnemyEntity(const Vec2& position, EnemyDesc& desc) :
 	mDesc(desc),
 	mSpeed(desc.speed)
 {
+	// TODO: ERROR CHECKING
 	mTexture.loadFromFile("media/" + desc.sprite);
 	Vec2 textureSize((float)mTexture.getSize().x, (float)mTexture.getSize().y);
 	mSprite.setTexture(mTexture);
@@ -29,6 +30,13 @@ void EnemyEntity::_setupParts()
 	}
 }
 
+void EnemyEntity::_onDestroy()
+{
+	for (auto i = mParts.begin(); i != mParts.end(); ++i)
+		EntityManager::inst().destroyEntity(*i);
+	mParts.clear();
+}
+
 void EnemyEntity::damage(const Vec2& direction, uint damageTaken)
 {
 	DamageableEntity::damage(direction, damageTaken);
@@ -47,24 +55,11 @@ void EnemyEntity::render(sf::RenderWindow& window)
 
 void EnemyEntity::onCollision(shared_ptr<Entity> other)
 {
-	shared_ptr<BulletEntity> bullet = dynamic_pointer_cast<BulletEntity>(other);
-	if (bullet != shared_ptr<BulletEntity>())
-	{
-		// Take damage
-		damage(other->getPosition() - mPosition, 5);
+	DamageableEntity::onCollision(other);
 
-		// Despawn bullet
-		bullet->despawn();
-	}
-
-	// If we're dead - remove ourselves and all parts
+	// If we're dead - remove ourselves
 	if (mHealth < 0)
-	{
 		EntityManager::inst().destroyEntity(shared_from_this());
-		for (auto i = mParts.begin(); i != mParts.end(); ++i)
-			EntityManager::inst().destroyEntity(*i);
-		mParts.clear();
-	}
 }
 
 sf::Sprite& EnemyEntity::getSprite()

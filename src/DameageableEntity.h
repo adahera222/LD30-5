@@ -12,6 +12,7 @@ public:
 	virtual ~DamageableEntity();
 
 	virtual void damage(const Vec2& direction, uint damageTaken);
+	virtual void onCollision(shared_ptr<Entity> other);
 
 protected:
 	int mHealth;

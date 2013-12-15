@@ -52,6 +52,27 @@ int random(int min, int max);
 // Game
 #include "Game.h"
 
+// Useful functions
+inline float lerp(float x, float y, float t)
+{
+	return x * (1.0f - t) + y * t;
+}
+
+inline float step(float x, float t, float s)
+{
+	if (t > x)
+	{
+		x += s;
+		return t > x ? x : t;
+	}
+	if (t < x)
+	{
+		x -= s;
+		return t < x ? x : t;
+	}
+	return x;
+}
+
 // Desc structures
 struct EnemyPartDesc
 {

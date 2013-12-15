@@ -27,7 +27,6 @@ public:
 	bool inBulletTime() const;
 
 	void _specialAttack();
-
 	void _hitShield(const Vec2& direction);
 
 	// Inherited from ShipEntity

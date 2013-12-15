@@ -7,11 +7,13 @@
 
 class EnemyEntity;
 
-class EnemyPartEntity : public DamageableEntity
+class EnemyPartEntity : public DamageableEntity, public enable_shared_from_this<EnemyPartEntity>
 {
 public:
 	EnemyPartEntity(EnemyPartDesc& desc, shared_ptr<EnemyEntity> parent);
 	virtual ~EnemyPartEntity();
+
+	weak_ptr<EnemyEntity> getParent() const;
 
 	// Inherited from ShipEntity
 	virtual void damage(const Vec2& direction, uint damageTaken);

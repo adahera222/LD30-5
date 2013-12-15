@@ -22,6 +22,11 @@ EnemyPartEntity::~EnemyPartEntity()
 {
 }
 
+weak_ptr<EnemyEntity> EnemyPartEntity::getParent() const
+{
+	return mParent;
+}
+
 void EnemyPartEntity::damage(const Vec2& direction, uint damageTaken)
 {
 	DamageableEntity::damage(direction, damageTaken);
@@ -68,6 +73,11 @@ void EnemyPartEntity::render(sf::RenderWindow& window)
 
 void EnemyPartEntity::onCollision(shared_ptr<Entity> other)
 {
+	DamageableEntity::onCollision(other);
+
+	// If we're dead - remove ourselves
+	if (mHealth < 0)
+		EntityManager::inst().destroyEntity(shared_from_this());
 }
 
 sf::Sprite& EnemyPartEntity::getSprite()

@@ -41,11 +41,6 @@ void BulletEntity::despawn()
 void BulletEntity::update(float dt)
 {
 	mPosition += mVelocity * dt;
-
-	// Despawn when outside the screen
-	if (mPosition.x < 0.0f || mPosition.x > Game::SCREEN_WIDTH ||
-		mPosition.y < 0.0f || mPosition.y > Game::SCREEN_HEIGHT)
-		despawn();
 }
 
 void BulletEntity::render(sf::RenderWindow& window)

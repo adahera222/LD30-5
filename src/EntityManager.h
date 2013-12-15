@@ -9,6 +9,9 @@
 #include "EnemyEntity.h"
 #include "EnemyPartEntity.h"
 #include "BulletEntity.h"
+#include "MissileSavloWeapon.h"
+//#include "LaserWeapon.h"
+//#include "LightningWeapon.h"
 
 class EntityManager : public Singleton<EntityManager>
 {
@@ -20,6 +23,9 @@ public:
 	shared_ptr<EnemyEntity> createEnemy(const Vec2& position, const string& name);
 	shared_ptr<EnemyPartEntity> createEnemyPart(EnemyPartDesc& partDesc, shared_ptr<EnemyEntity> parent);
 	shared_ptr<BulletEntity> createBullet(bool friendly);
+	shared_ptr<MissileSavloWeapon> createMissileWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target);
+	//shared_ptr<BulletEntity> createLaserWeapon(bool friendly);
+	//shared_ptr<BulletEntity> createLightningWeapon(bool friendly);
 	shared_ptr<PlayerEntity> getPlayer() const;
 	void destroyEntity(shared_ptr<Entity> ent);
 
@@ -31,6 +37,8 @@ public:
 	vector<shared_ptr<BulletEntity>>::iterator getPlayerBulletsEnd();
 	vector<shared_ptr<BulletEntity>>::iterator getNonPlayerBulletsBegin();
 	vector<shared_ptr<BulletEntity>>::iterator getNonPlayerBulletsEnd();
+	vector<shared_ptr<SpecialWeapon>>::iterator getSpecialWeaponsBegin();
+	vector<shared_ptr<SpecialWeapon>>::iterator getSpecialWeaponsEnd();
 
 private:
 	map<string, EnemyDesc> mEnemyDescs;
@@ -39,7 +47,7 @@ private:
 	vector<shared_ptr<Entity>> mEntities;
 	vector<shared_ptr<BulletEntity>> mPlayerBullets; // bullets are stored seperately for collision detection
 	vector<shared_ptr<BulletEntity>> mNonPlayerBullets; // bullets are stored seperately for collision detection
-
+	vector<shared_ptr<SpecialWeapon>> mSpecialWeapons;
 };
 
 #endif // EntityManager_h__

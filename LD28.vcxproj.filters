@@ -57,6 +57,9 @@
     <ClInclude Include="src\SpecialWeaponEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\LaserWeaponEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -105,6 +108,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\SpecialWeaponEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LaserWeaponEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

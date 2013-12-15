@@ -30,6 +30,12 @@
 		]
 	},
 	{
+		"Name":"enemy3",
+		"Sprite":"enemy3.png",
+		"Health":40,
+		"Speed":[0.0, 200.0]
+	},
+	{
 		"Name":"boss1",
 		"Sprite":"boss1.png",
 		"Health":10000,

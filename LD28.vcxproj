@@ -21,6 +21,7 @@
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EntityManager.h" />
     <ClInclude Include="src\MissileWeaponEntity.h" />
+    <ClInclude Include="src\LaserWeaponEntity.h" />
     <ClInclude Include="src\PlayerEntity.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\DameageableEntity.h" />
@@ -42,6 +43,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\MissileWeaponEntity.cpp" />
+    <ClCompile Include="src\LaserWeaponEntity.cpp" />
     <ClCompile Include="src\PlayerEntity.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\DameageableEntity.cpp" />

@@ -19,7 +19,7 @@ int Game::run()
 
 	sf::Clock scoreTimer;
 	sf::Clock spawnTimer;
-	weak_ptr<EnemyEntity> boss = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
+	weak_ptr<EnemyEntity> boss;// = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
 	int score = 0;
 	int initialRowSize = 4;
 	int rowSize = initialRowSize;
@@ -52,7 +52,7 @@ int Game::run()
 		{
 			if (spawnTimer.getElapsedTime().asSeconds() > 4.0f / getTimeRate())
 			{
-				string enemy = rowSize % 2 == 0 ? "enemy1" : "enemy2";
+				string enemy = "enemy" + to_string(3);
 				for (int x = 1; x < (rowSize + 1); x++)
 					EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1), -16.0f), enemy);
 				spawnTimer.restart();
@@ -60,9 +60,10 @@ int Game::run()
 		}
 
 		// Run a frame
+		float dt = time * getTimeRate();
 		Renderer::inst().processEvents();
-		EntityManager::inst().updateAll(time * getTimeRate());
-		Renderer::inst().render();
+		EntityManager::inst().updateAll(dt);
+		Renderer::inst().render(dt);
 	}
 
 	// Tear down

@@ -18,7 +18,7 @@ struct Lock
 	bool hasLock;
 	float lockProgress;
 	bool fired;
-	weak_ptr<MissileWeaponEntity> weapon;
+	weak_ptr<SpecialWeaponEntity> weapon;
 };
 
 class PlayerEntity : public DamageableEntity, public enable_shared_from_this<PlayerEntity>
@@ -70,6 +70,13 @@ private:
 	sf::Sprite mTargetSprite;
 	sf::Sprite mLockingOnSprite;
 	sf::Sprite mLockOnSprite;
+
+	// Player 2 stuff
+	vector<Vec2> mLaserPoints;
+	sf::Texture mLaserGunTexture;
+	sf::Texture mLaserTexture;
+	sf::Sprite mLaserGunSprite;
+	sf::Sprite mLaserSprite;
 };
 
 #endif // PlayerEntity_h__

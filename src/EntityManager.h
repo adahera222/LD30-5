@@ -10,8 +10,7 @@
 #include "EnemyPartEntity.h"
 #include "BulletEntity.h"
 #include "MissileWeaponEntity.h"
-//#include "LaserWeapon.h"
-//#include "LightningWeapon.h"
+#include "LaserWeaponEntity.h"
 
 class EntityManager : public Singleton<EntityManager>
 {
@@ -24,8 +23,7 @@ public:
 	shared_ptr<EnemyPartEntity> createEnemyPart(EnemyPartDesc& partDesc, shared_ptr<EnemyEntity> parent);
 	shared_ptr<BulletEntity> createBullet(bool friendly);
 	shared_ptr<MissileWeaponEntity> createMissileWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target);
-	//shared_ptr<BulletEntity> createLaserWeapon(bool friendly);
-	//shared_ptr<BulletEntity> createLightningWeapon(bool friendly);
+	shared_ptr<LaserWeaponEntity> createLaserWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target);
 	shared_ptr<PlayerEntity> getPlayer() const;
 	void destroyEntity(shared_ptr<Entity> ent);
 

@@ -2,8 +2,7 @@
 #include "MissileWeaponEntity.h"
 
 MissileWeaponEntity::MissileWeaponEntity(const Vec2& startingPosition, weak_ptr<DamageableEntity> target) :
-	SpecialWeaponEntity(startingPosition),
-	mTarget(target)
+	SpecialWeaponEntity(startingPosition, target)
 {
 	mMissileTexture.loadFromFile("media/missile.png");
 	Vec2 textureSize((float)mMissileTexture.getSize().x, (float)mMissileTexture.getSize().y);
@@ -14,11 +13,6 @@ MissileWeaponEntity::MissileWeaponEntity(const Vec2& startingPosition, weak_ptr<
 
 MissileWeaponEntity::~MissileWeaponEntity()
 {
-}
-
-weak_ptr<DamageableEntity> MissileWeaponEntity::getTarget() const
-{
-	return mTarget;
 }
 
 void MissileWeaponEntity::update(float dt)

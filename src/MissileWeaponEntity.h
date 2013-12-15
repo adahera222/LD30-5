@@ -9,8 +9,6 @@ public:
 	MissileWeaponEntity(const Vec2& startingPosition, weak_ptr<DamageableEntity> target);
 	virtual ~MissileWeaponEntity();
 
-	weak_ptr<DamageableEntity> getTarget() const;
-
 	// Inherited from SpecialWeapon
 	virtual void update(float dt);
 	virtual void render(sf::RenderWindow& window);
@@ -18,8 +16,6 @@ public:
 	virtual sf::Sprite& getSprite();
 
 private:
-	weak_ptr<DamageableEntity> mTarget;
-
 	// Rendering
 	sf::Texture mMissileTexture;
 	sf::Sprite mMissileSprite;

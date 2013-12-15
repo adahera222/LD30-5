@@ -34,6 +34,13 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	{
 		mGunPoints.push_back(Vec2(-20.0f, -20.0f));
 		mGunPoints.push_back(Vec2(20.0f, -20.0f));
+
+		mLaserPoints.push_back(Vec2(-26.5f, -9.5f));
+		mLaserPoints.push_back(Vec2(26.5f, -9.5f));
+		mLaserPoints.push_back(Vec2(-26.5f, 3.5f));
+		mLaserPoints.push_back(Vec2(26.5f, 3.5f));
+		mLaserPoints.push_back(Vec2(-26.5f, 16.5f));
+		mLaserPoints.push_back(Vec2(26.5f, 16.5f));
 	}
 
 	// Set up ship sprite
@@ -66,8 +73,26 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	mLockingOnSprite.setTexture(mLockingOnTexture);
 	mLockingOnSprite.setOrigin(lockingOnTextureSize * 0.5f);
 
+	// Set up player 2 stuff
+	if (shipID == 2)
+	{
+		if (!mLaserGunTexture.loadFromFile("media/player2-laser.png"))
+			throw std::exception("Failed to load player2-laser texture");
+		if (!mLaserTexture.loadFromFile("media/laser.png"))
+			throw std::exception("Failed to load laser texture");
+
+		// Set up sprites
+		Vec2 laserGunTextureSize((float)mLaserGunTexture.getSize().x, (float)mLaserGunTexture.getSize().y);
+		mLaserGunSprite.setTexture(mLaserGunTexture);
+		mLaserGunSprite.setOrigin(laserGunTextureSize * 0.5f);
+		Vec2 laserTextureSize((float)mLaserTexture.getSize().x * 0.5f, (float)mLaserTexture.getSize().y);
+		mLaserSprite.setTexture(mLaserTexture);
+		mLaserSprite.setOrigin(laserTextureSize);
+	}
+
 	// Create locks
-	for (uint i = 0; i < 8; ++i)
+	uint noLocks = shipID == 2 ? mLaserPoints.size() : 8;
+	for (uint i = 0; i < noLocks; ++i)
 	{
 		Lock lock;
 		lock.hasLock = false;
@@ -97,11 +122,11 @@ void PlayerEntity::_specialAttack()
 {
 	// Get entities
 	vector<shared_ptr<DamageableEntity>> entities;
-	for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
+	for (uint i = 0; i < mLocks.size(); ++i)
 	{
-		if ((*i).hasLock && (*i).weapon.lock() == shared_ptr<MissileWeaponEntity>())
+		if (mLocks[i].hasLock && mLocks[i].weapon.lock() == shared_ptr<SpecialWeaponEntity>())
 		{
-			shared_ptr<DamageableEntity> entity = (*i).target.lock();
+			shared_ptr<DamageableEntity> entity = mLocks[i].target.lock();
 			if (entity != shared_ptr<DamageableEntity>())
 			{
 				// Do something depending on currently selected player
@@ -109,9 +134,12 @@ void PlayerEntity::_specialAttack()
 
 				// Player 1
 				// Fire a savlo of missiles from the back of the ship
-				(*i).weapon = EntityManager::inst().createMissileWeapon(mPosition, entity);
+				if (mShipID == 1)
+					mLocks[i].weapon = EntityManager::inst().createMissileWeapon(mPosition, entity);
+				else if (mShipID == 2)
+					mLocks[i].weapon = EntityManager::inst().createLaserWeapon(mPosition + mLaserPoints[i], entity);
 			}
-			(*i).fired = true;
+			mLocks[i].fired = true;
 		}
 	}
 }
@@ -196,13 +224,13 @@ void PlayerEntity::update(float dt)
 		{
 			// Remove the lock if the target or weapon was destroyed after it was fired
 			if ((*i).target.lock() == shared_ptr<DamageableEntity>() ||
-				((*i).fired && (*i).weapon.lock() == shared_ptr<MissileWeaponEntity>()))
+				((*i).fired && (*i).weapon.lock() == shared_ptr<SpecialWeaponEntity>()))
 			{
 				(*i).target = shared_ptr<DamageableEntity>();
 				(*i).lockProgress = 0.0f;
 				(*i).hasLock = false;
 				(*i).fired = false;
-				(*i).weapon = shared_ptr<MissileWeaponEntity>();
+				(*i).weapon = shared_ptr<SpecialWeaponEntity>();
 			}
 			else
 			{
@@ -299,6 +327,42 @@ void PlayerEntity::render(sf::RenderWindow& window)
 
 	mTargetSprite.setPosition(mPosition + Vec2(0.0f, -250.0f));
 	window.draw(mTargetSprite);
+
+	// Draw laser guns
+	if (mShipID == 2)
+	{
+		for (uint i = 0; i < mLocks.size(); ++i)
+		{
+			Vec2 gunPosition = mPosition + mLaserPoints[i];
+			mLaserGunSprite.setPosition(gunPosition);
+
+			// Point at target
+			shared_ptr<DamageableEntity> target = mLocks[i].target.lock();
+			if (target != shared_ptr<DamageableEntity>())
+			{
+				Vec2 targetPos = target->getSprite().getPosition();
+				Vec2 direction = targetPos - gunPosition;
+				float angle = atan2(direction.y, direction.x) * RAD_TO_DEG + 90.0f;
+				mLaserGunSprite.setRotation(angle);
+				window.draw(mLaserGunSprite);
+
+				// Draw lazoorz
+				if (mLocks[i].weapon.lock() != shared_ptr<SpecialWeaponEntity>())
+				{
+					float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
+					mLaserSprite.setRotation(angle);
+					mLaserSprite.setPosition(gunPosition);
+					mLaserSprite.setScale(Vec2(1.0f, distance / (float)mLaserTexture.getSize().y));
+					window.draw(mLaserSprite);
+				}
+			}
+			else
+			{
+				mLaserGunSprite.setRotation(0.0f);
+				window.draw(mLaserGunSprite);
+			}
+		}
+	}
 
 	// Draw shields
 	for (auto i = mShields.begin(); i != mShields.end(); ++i)

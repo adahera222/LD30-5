@@ -5,19 +5,40 @@
 
 #include "Singleton.h"
 
+class Explosion
+{
+public:
+	Explosion(const Vec2& position, float size);
+	~Explosion();
+
+	bool update(float dt);
+	void render(sf::RenderWindow& window);
+
+private:
+	sf::Texture mTexture;
+	sf::Sprite mSprite;
+
+	float mProgress;
+
+};
+
 class Renderer : public Singleton<Renderer>
 {
 public:
 	Renderer(uint width, uint height, bool fullscreen);
 	~Renderer();
 
+	void createExplosion(const Vec2& position, float size);
+
 	void processEvents();
-	void render();
+	void render(float dt);
 
 	sf::RenderWindow& getWindow();
 
 private:
 	sf::RenderWindow mWindow;
+
+	list<shared_ptr<Explosion>> mExplosions;
 
 };
 

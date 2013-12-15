@@ -123,6 +123,13 @@ shared_ptr<MissileWeaponEntity> EntityManager::createMissileWeapon(const Vec2& s
 	return newMissileWeapon;
 }
 
+shared_ptr<LaserWeaponEntity> EntityManager::createLaserWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target)
+{
+	shared_ptr<LaserWeaponEntity> newLaserWeapon(new LaserWeaponEntity(startingPosition, target));
+	mSpecialWeapons.push_back(newLaserWeapon);
+	return newLaserWeapon;
+}
+
 shared_ptr<PlayerEntity> EntityManager::getPlayer() const
 {
 	return mPlayer;
@@ -210,10 +217,10 @@ void EntityManager::updateAll(float dt)
 	// Special Weapons on Targets
 	for (auto i = specialWeapons.begin(); i != specialWeapons.end(); ++i)
 	{
-		shared_ptr<MissileWeaponEntity> missile = dynamic_pointer_cast<MissileWeaponEntity>(*i);
-		if (missile != shared_ptr<MissileWeaponEntity>())
+		shared_ptr<SpecialWeaponEntity> special = dynamic_pointer_cast<SpecialWeaponEntity>(*i);
+		if (special != shared_ptr<SpecialWeaponEntity>())
 		{
-			shared_ptr<DamageableEntity> target = missile->getTarget().lock();
+			shared_ptr<DamageableEntity> target = special->getTarget().lock();
 			if (target != shared_ptr<DamageableEntity>())
 			{
 				if (Collision::PixelPerfectTest((*i)->getSprite(), target->getSprite()))

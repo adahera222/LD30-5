@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "EnemyEntity.h"
 #include "EntityManager.h"
+#include "Renderer.h"
 
 EnemyEntity::EnemyEntity(const Vec2& position, EnemyDesc& desc) :
 	DamageableEntity(position, desc.health, true),
@@ -78,7 +79,12 @@ void EnemyEntity::onCollision(shared_ptr<Entity> other)
 
 	// If we're dead - remove ourselves
 	if (mHealth < 0)
+	{
 		EntityManager::inst().destroyEntity(shared_from_this());
+
+		// Spawn explosion
+		Renderer::inst().createExplosion(mPosition, (float)mTexture.getSize().x);
+	}
 }
 
 sf::Sprite& EnemyEntity::getSprite()

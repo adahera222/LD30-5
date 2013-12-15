@@ -47,16 +47,16 @@ int Game::run()
 			// Spawn boss at some time
 
 		}
-		if (boss.lock() == shared_ptr<EnemyEntity>())
-		{
-			if (spawnTimer.getElapsedTime().asSeconds() > 4.0f / getTimeRate())
-			{
-				string enemy = rowSize % 2 == 0 ? "enemy1" : "enemy2";
-				for (int x = 1; x < (rowSize + 1); x++)
-					EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1), -16.0f), enemy);
-				spawnTimer.restart();
-			}
-		}
+// 		if (boss.lock() == shared_ptr<EnemyEntity>())
+// 		{
+// 			if (spawnTimer.getElapsedTime().asSeconds() > 4.0f / getTimeRate())
+// 			{
+// 				string enemy = rowSize % 2 == 0 ? "enemy1" : "enemy2";
+// 				for (int x = 1; x < (rowSize + 1); x++)
+// 					EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1), -16.0f), enemy);
+// 				spawnTimer.restart();
+// 			}
+// 		}
 
 		// Run a frame
 		Renderer::inst().processEvents();

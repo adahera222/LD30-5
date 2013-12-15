@@ -235,44 +235,39 @@ void PlayerEntity::update(float dt)
 			shared_ptr<DamageableEntity> ent = dynamic_pointer_cast<DamageableEntity>(*i);
 			if (ent != shared_ptr<DamageableEntity>())
 			{
-				// The entitys centre must be inside the target for a lock to register
-				Vec2 delta = mTargetSprite.getPosition() - ent->getSprite().getPosition();
-				float distanceSq = delta.x * delta.x + delta.y * delta.y;
-				if (distanceSq < targetRadiusSq)
+				if (ent->isLockable())
 				{
-					// Make sure this entity hasn't already been locked onto
-					bool lockedOn = false;
-					for (auto l = mLocks.begin(); l != mLocks.end(); ++l)
+					// The entitys centre must be inside the target for a lock to register
+					Vec2 delta = mTargetSprite.getPosition() - ent->getSprite().getPosition();
+					float distanceSq = delta.x * delta.x + delta.y * delta.y;
+					if (distanceSq < targetRadiusSq)
 					{
-						if ((*l).target.lock() == ent)
+						// Make sure this entity hasn't already been locked onto
+						// TODO max number of locks = ceil(health / missile damage)
+						bool lockedOn = false;
+						for (auto l = mLocks.begin(); l != mLocks.end(); ++l)
 						{
-							lockedOn = true;
-							break;
-						}
-						shared_ptr<EnemyPartEntity> part = dynamic_pointer_cast<EnemyPartEntity>(ent);
-						if (part != shared_ptr<EnemyPartEntity>())
-						{
-							if ((*l).target.lock() == part->getParent().lock())
+							if ((*l).target.lock() == ent)
 							{
 								lockedOn = true;
 								break;
 							}
 						}
-					}
 
-					// Find a free lock
-					if (!lockedOn)
-					{
-						for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
+						// Find a free lock
+						if (!lockedOn)
 						{
-							// Lock on!!
-							if (!(*i).hasLock)
+							for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
 							{
-								(*i).hasLock = true;
-								(*i).lockProgress = 0.0f;
-								(*i).target = ent;
-								(*i).fired = false;
-								break;
+								// Lock on!!
+								if (!(*i).hasLock)
+								{
+									(*i).hasLock = true;
+									(*i).lockProgress = 0.0f;
+									(*i).target = ent;
+									(*i).fired = false;
+									break;
+								}
 							}
 						}
 					}

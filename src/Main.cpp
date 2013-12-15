@@ -5,7 +5,14 @@
 
 int main(int argc, char** argv)
 {
-	return Game::run();
+	try
+	{
+		return Game::run();
+	}
+	catch (std::runtime_error& e)
+	{
+		MessageBoxA(NULL, e.what(), "Error", MB_ICONERROR | MB_OK);
+	}
 }
 
 // Win32 Main

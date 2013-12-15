@@ -30,7 +30,7 @@ void MissileSavloWeapon::update(float dt)
 	shared_ptr<DamageableEntity> target = mTarget.lock();
 	if (target != shared_ptr<DamageableEntity>())
 	{
-		Vec2 targetDirection = target->getPosition() - mPosition;
+		Vec2 targetDirection = target->getSprite().getPosition() - mPosition;
 		float targetAngle = atan2(targetDirection.y, targetDirection.x) * RAD_TO_DEG + 90.0f;
 		if (targetAngle > currentAngle)
 		{

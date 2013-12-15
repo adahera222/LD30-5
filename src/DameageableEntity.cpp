@@ -16,6 +16,11 @@ DamageableEntity::~DamageableEntity()
 {
 }
 
+int DamageableEntity::getHealth() const
+{
+	return mHealth;
+}
+
 bool DamageableEntity::isLockable() const
 {
 	return mLockable;

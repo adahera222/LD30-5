@@ -9,7 +9,9 @@ EntityManager::EntityManager()
 	ifstream file("media/enemy-detail.json");
 	Json::Reader reader;
 	Json::Value root;
-	reader.parse(file, root);
+	if (!reader.parse(file, root))
+		throw std::runtime_error("Error in enemy-detail.json - " + reader.getFormattedErrorMessages());
+
 	for (Json::ValueIterator i = root.begin(); i != root.end(); ++i)
 	{
 		const Json::Value& enemy = *i;
@@ -24,7 +26,7 @@ EntityManager::EntityManager()
 		// Add parts
 		if (enemy.isMember("Parts"))
 		{
-			const Json::Value& partsList = enemy.get("Parts", Json::arrayValue);
+			const Json::Value& partsList = enemy["Parts"];
 			for (Json::ValueIterator l = partsList.begin(); l != partsList.end(); ++l)
 			{
 				Json::Value& part = *l;

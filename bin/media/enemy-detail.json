@@ -25,7 +25,7 @@
 				"Sprite":"",
 				"BulletSpeed":200,
 				"BulletInterval":1,
-				"Rotation":180,
+				"Rotation":180
 			}
 		]
 	},

@@ -11,6 +11,7 @@ public:
 	DamageableEntity(const Vec2& position, int health, bool lockable);
 	virtual ~DamageableEntity();
 
+	int getHealth() const;
 	bool isLockable() const;
 
 	// Inherited from Entity

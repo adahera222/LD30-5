@@ -16,9 +16,9 @@ EnemyEntity::EnemyEntity(const Vec2& position, EnemyDesc& desc) :
 		mSpeed = desc.speed;
 
 	// TODO: ERROR CHECKING
-	mTexture.loadFromFile("media/" + desc.sprite);
-	Vec2 textureSize((float)mTexture.getSize().x, (float)mTexture.getSize().y);
-	mSprite.setTexture(mTexture);
+	mTexture = ResourceCache::inst().getTexture(desc.sprite);
+	Vec2 textureSize((float)mTexture->getSize().x, (float)mTexture->getSize().y);
+	mSprite.setTexture(*mTexture);
 	mSprite.setOrigin(textureSize * 0.5f);
 }
 
@@ -83,7 +83,7 @@ void EnemyEntity::onCollision(shared_ptr<Entity> other)
 		EntityManager::inst().destroyEntity(shared_from_this());
 
 		// Spawn explosion
-		Renderer::inst().createExplosion(mPosition, (float)mTexture.getSize().x);
+		Renderer::inst().createExplosion(mPosition, (float)mTexture->getSize().x);
 	}
 }
 

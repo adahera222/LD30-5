@@ -8,11 +8,9 @@ BulletManager::BulletManager()
 {
 	assert(EntityManager::ptr());
 
-	// Load bullet textures
-	sf::Texture playerCommon; playerCommon.loadFromFile("media/bullet-player-common.png");
-	sf::Texture enemyCommon; enemyCommon.loadFromFile("media/bullet-enemy-common.png");
-	mBulletTextures.insert(make_pair(BT_PLAYER_COMMON, playerCommon));
-	mBulletTextures.insert(make_pair(BT_ENEMY_COMMON, enemyCommon));
+	// Load bullet texturesa
+	mBulletTextures.insert(make_pair(BT_PLAYER_COMMON, ResourceCache::inst().getTexture("bullet-player-common.png")));
+	mBulletTextures.insert(make_pair(BT_ENEMY_COMMON, ResourceCache::inst().getTexture("bullet-enemy-common.png")));
 
 	// Create initial bullets
 	for (uint i = 0; i < 50; ++i)

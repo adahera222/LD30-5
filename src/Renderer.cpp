@@ -4,15 +4,19 @@
 #include "Renderer.h"
 #include "EntityManager.h"
 
+#define WIDTH 4
+#define HEIGHT 5
+
 Explosion::Explosion(const Vec2& position, float size) :
 	mProgress(0.0f)
 {
-	mTexture.loadFromFile("media/explosion.png");
+	mTexture = ResourceCache::inst().getTexture("explosion.png");
 
-	Vec2 texSize((float)mTexture.getSize().x, (float)mTexture.getSize().y);
-	mSprite.setTexture(mTexture);
+	Vec2 texSize((float)mTexture->getSize().x / WIDTH, (float)mTexture->getSize().y / HEIGHT);
+	mSprite.setTexture(*mTexture);
 	mSprite.setPosition(position);
-	mSprite.setScale(Vec2(size / texSize.x, size / texSize.y));
+	mSprite.setOrigin(texSize * 0.5f);
+	mSprite.setScale(Vec2(size / (texSize.x * 0.5f), size / (texSize.y * 0.5f)));
 }
 
 Explosion::~Explosion()
@@ -26,7 +30,12 @@ bool Explosion::update(float dt)
 	if (mProgress == 1.0f)
 		return false;
 
-	// Update texture here
+	// Update texture
+	int currentFrame = (int)floor(mProgress * 20.0f);
+	int x = currentFrame % WIDTH;
+	int y = (int)floor((float)currentFrame / WIDTH);
+	sf::Vector2<int> sub(mTexture->getSize().x / WIDTH, mTexture->getSize().y / HEIGHT);
+	mSprite.setTextureRect(sf::IntRect(sf::Vector2<int>(x * sub.x, y * sub.y), sub));
 
 	return true;
 }
@@ -41,6 +50,10 @@ Renderer::Renderer(uint width, uint height, bool fullscreen) :
 {
 	// Set window settings
 	mWindow.setVerticalSyncEnabled(true);
+
+	// Load background
+	mBackgroundTexture = ResourceCache::inst().getTexture("background.jpg");
+	mBackground.setTexture(*mBackgroundTexture);
 }
 
 Renderer::~Renderer()
@@ -80,6 +93,9 @@ void Renderer::render(float dt)
 {
 	mWindow.clear(sf::Color::Black);
 
+	// Draw background
+	mWindow.draw(mBackground);
+
 	// Draw entities
 	for (auto i = EntityManager::inst().getEntitiesBegin(); i != EntityManager::inst().getEntitiesEnd(); ++i)
 		(*i)->render(mWindow);
@@ -92,10 +108,17 @@ void Renderer::render(float dt)
 	EntityManager::inst().getPlayer()->_drawLocks(mWindow);
 
 	// Update effects
-	for (auto i = mExplosions.begin(); i != mExplosions.end(); ++i)
+	for (auto i = mExplosions.begin(); i != mExplosions.end();)
 	{
-		(*i)->update(dt);
-		(*i)->render(mWindow);
+		if (!(*i)->update(dt))
+		{
+			i = mExplosions.erase(i);
+		}
+		else
+		{
+			(*i)->render(mWindow);
+			++i;
+		}
 	}
 
 	mWindow.display();

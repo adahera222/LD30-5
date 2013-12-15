@@ -49,8 +49,9 @@ void randomSeed(uint seed);
 float random(float min, float max);
 int random(int min, int max);
 
-// Game
+// Global Classes
 #include "Game.h"
+#include "ResourceCache.h"
 
 // Useful functions
 inline float lerp(float x, float y, float t)

@@ -9,7 +9,7 @@ BulletEntity::BulletEntity() :
 	mRotation(0.0f),
 	mParent(),
 	mActive(false),
-	mTexturePtr(nullptr)
+	mTexture(nullptr)
 {
 }
 
@@ -17,16 +17,16 @@ BulletEntity::~BulletEntity()
 {
 }
 
-void BulletEntity::spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, sf::Texture& texture)
+void BulletEntity::spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, sf::Texture* texture)
 {
 	mPosition = position;
 	mVelocity = velocity;
 	mRotation = atan2(velocity.y, velocity.x) * RAD_TO_DEG + 90.0f;
 	mParent = parent;
 
-	Vec2 textureSize((float)texture.getSize().x, (float)texture.getSize().y);
-	mTexturePtr = &texture;
-	mSprite.setTexture(*mTexturePtr);
+	Vec2 textureSize((float)texture->getSize().x, (float)texture->getSize().y);
+	mTexture = texture;
+	mSprite.setTexture(*mTexture);
 	mSprite.setOrigin(textureSize * 0.5f);
 	mSprite.setRotation(mRotation);
 

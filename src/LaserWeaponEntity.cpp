@@ -8,9 +8,9 @@ LaserWeaponEntity::LaserWeaponEntity(const Vec2& startingPosition, weak_ptr<Dama
 	SpecialWeaponEntity(startingPosition, target),
 	mProgress(0.0f)
 {
-	mSquare.loadFromFile("media/square.jpg");
-	Vec2 size((float)mSquare.getSize().x, (float)mSquare.getSize().y);
-	mCollisionBox.setTexture(mSquare);
+	mSquare = ResourceCache::inst().getTexture("square.jpg");
+	Vec2 size((float)mSquare->getSize().x, (float)mSquare->getSize().y);
+	mCollisionBox.setTexture(*mSquare);
 	mCollisionBox.setOrigin(size * 0.5f);
 }
 
@@ -21,7 +21,8 @@ LaserWeaponEntity::~LaserWeaponEntity()
 void LaserWeaponEntity::update(float dt)
 {
 	// Move towards target
-	mProgress = step(mProgress, 1.0f, 1.0f * dt);
+	float timeTaken = 0.75f;
+	mProgress = step(mProgress, 1.0f, dt / timeTaken);
 	shared_ptr<DamageableEntity> target = mTarget.lock();
 	if (target != shared_ptr<DamageableEntity>())
 		mPosition = mStartPosition * (1.0f - mProgress) + target->getSprite().getPosition() * mProgress;

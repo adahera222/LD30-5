@@ -8,6 +8,7 @@
 
 int Game::run()
 {
+	new ResourceCache;
 	new Renderer(Game::SCREEN_WIDTH, Game::SCREEN_HEIGHT, false);
 	new EntityManager;
 	new BulletManager;
@@ -19,7 +20,7 @@ int Game::run()
 
 	sf::Clock scoreTimer;
 	sf::Clock spawnTimer;
-	weak_ptr<EnemyEntity> boss;// = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
+	weak_ptr<EnemyEntity> boss = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
 	int score = 0;
 	int initialRowSize = 4;
 	int rowSize = initialRowSize;
@@ -70,6 +71,7 @@ int Game::run()
 	BulletManager::release();
 	EntityManager::release();
 	Renderer::release();
+	ResourceCache::release();
 
 	return EXIT_SUCCESS;
 }

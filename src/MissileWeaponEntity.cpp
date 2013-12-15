@@ -4,11 +4,11 @@
 MissileWeaponEntity::MissileWeaponEntity(const Vec2& startingPosition, weak_ptr<DamageableEntity> target) :
 	SpecialWeaponEntity(startingPosition, target)
 {
-	mMissileTexture.loadFromFile("media/missile.png");
-	Vec2 textureSize((float)mMissileTexture.getSize().x, (float)mMissileTexture.getSize().y);
-	mMissileSprite.setTexture(mMissileTexture);
-	mMissileSprite.setOrigin(textureSize * 0.5f);
-	mMissileSprite.setRotation(180.0f);
+	mTexture = ResourceCache::inst().getTexture("missile.png");
+	Vec2 textureSize((float)mTexture->getSize().x, (float)mTexture->getSize().y);
+	mSprite.setTexture(*mTexture);
+	mSprite.setOrigin(textureSize * 0.5f);
+	mSprite.setRotation(180.0f);
 }
 
 MissileWeaponEntity::~MissileWeaponEntity()
@@ -17,7 +17,7 @@ MissileWeaponEntity::~MissileWeaponEntity()
 
 void MissileWeaponEntity::update(float dt)
 {
-	float currentAngle = mMissileSprite.getRotation();
+	float currentAngle = mSprite.getRotation();
 
 	// Rotate towards target using lerp
 	float speed = 600.0f;
@@ -37,7 +37,7 @@ void MissileWeaponEntity::update(float dt)
 				targetAngle += 360.0f;
 		}
 		float swayFactor = 1.0f + sin(random(0.0f, TWO_PI));
-		mMissileSprite.setRotation(step(currentAngle, targetAngle, 500.0f * swayFactor * dt));
+		mSprite.setRotation(step(currentAngle, targetAngle, 500.0f * swayFactor * dt));
 		speed = 600.0f / (1.0f + abs(targetAngle - currentAngle) / 180.0f);
 	}
 
@@ -48,8 +48,8 @@ void MissileWeaponEntity::update(float dt)
 
 void MissileWeaponEntity::render(sf::RenderWindow& window)
 {
-	mMissileSprite.setPosition(mPosition);
-	window.draw(mMissileSprite);
+	mSprite.setPosition(mPosition);
+	window.draw(mSprite);
 }
 
 void MissileWeaponEntity::onCollision(shared_ptr<Entity> other)
@@ -58,5 +58,5 @@ void MissileWeaponEntity::onCollision(shared_ptr<Entity> other)
 
 sf::Sprite& MissileWeaponEntity::getSprite()
 {
-	return mMissileSprite;
+	return mSprite;
 }

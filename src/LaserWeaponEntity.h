@@ -22,7 +22,7 @@ private:
 	float mProgress;
 	Vec2 mStartPosition;
 
-	sf::Texture mSquare;
+	sf::Texture* mSquare;
 	sf::Sprite mCollisionBox;
 
 };

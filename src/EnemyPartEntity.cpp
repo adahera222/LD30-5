@@ -11,9 +11,9 @@ EnemyPartEntity::EnemyPartEntity(EnemyPartDesc& desc, shared_ptr<EnemyEntity> pa
 	mDesc(desc),
 	mParent(parent)
 {
-	mTexture.loadFromFile("media/" + desc.sprite);
-	Vec2 textureSize((float)mTexture.getSize().x, (float)mTexture.getSize().y);
-	mSprite.setTexture(mTexture);
+	mTexture = ResourceCache::inst().getTexture(desc.sprite);
+	Vec2 textureSize((float)mTexture->getSize().x, (float)mTexture->getSize().y);
+	mSprite.setTexture(*mTexture);
 	mSprite.setOrigin(textureSize * 0.5f);
 	mSprite.setRotation(desc.rotation);
 }

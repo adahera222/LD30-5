@@ -25,6 +25,7 @@
     <ClInclude Include="src\PlayerEntity.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\DameageableEntity.h" />
+    <ClInclude Include="src\ResourceCache.h" />
     <ClInclude Include="src\SpecialWeaponEntity.h" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +48,7 @@
     <ClCompile Include="src\PlayerEntity.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\DameageableEntity.cpp" />
+    <ClCompile Include="src\ResourceCache.cpp" />
     <ClCompile Include="src\SpecialWeaponEntity.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -60,11 +60,11 @@ private:
 	vector<Lock> mLocks;
 
 	// Rendering
-	sf::Texture mShipTexture;
-	sf::Texture mShieldTexture;
-	sf::Texture mTargetTexture;
-	sf::Texture mLockingOnTexture;
-	sf::Texture mLockOnTexture;
+	sf::Texture* mShipTexture;
+	sf::Texture* mShieldTexture;
+	sf::Texture* mTargetTexture;
+	sf::Texture* mLockingOnTexture;
+	sf::Texture* mLockOnTexture;
 	sf::Sprite mShipSprite;
 	sf::Sprite mShieldSprite;
 	sf::Sprite mTargetSprite;
@@ -73,8 +73,8 @@ private:
 
 	// Player 2 stuff
 	vector<Vec2> mLaserPoints;
-	sf::Texture mLaserGunTexture;
-	sf::Texture mLaserTexture;
+	sf::Texture* mLaserGunTexture;
+	sf::Texture* mLaserTexture;
 	sf::Sprite mLaserGunSprite;
 	sf::Sprite mLaserSprite;
 };

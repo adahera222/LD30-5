@@ -17,8 +17,8 @@ public:
 
 private:
 	// Rendering
-	sf::Texture mMissileTexture;
-	sf::Sprite mMissileSprite;
+	sf::Texture* mTexture;
+	sf::Sprite mSprite;
 
 };
 

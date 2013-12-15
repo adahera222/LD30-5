@@ -11,7 +11,7 @@ public:
 	BulletEntity();
 	~BulletEntity();
 
-	void spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, sf::Texture& texture);
+	void spawn(const Vec2& position, const Vec2& velocity, shared_ptr<Entity> parent, sf::Texture* texture);
 	void despawn();
 
 	virtual void update(float dt);
@@ -29,7 +29,7 @@ private:
 
 	bool mActive;
 
-	sf::Texture* mTexturePtr;
+	sf::Texture* mTexture;
 	sf::Sprite mSprite;
 
 };

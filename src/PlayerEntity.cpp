@@ -10,16 +10,11 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	mShipID(shipID)
 {
 	// Load textures
-	if (!mShipTexture.loadFromFile("media/player" + to_string(shipID) + ".png"))
-		throw std::exception("Failed to load player texture");
-	if (!mShieldTexture.loadFromFile("media/shield.png"))
-		throw std::exception("Failed to load shield texture");
-	if (!mTargetTexture.loadFromFile("media/target.png"))
-		throw std::exception("Failed to load target texture");
-	if (!mLockOnTexture.loadFromFile("media/lock.png"))
-		throw std::exception("Failed to load lock texture");
-	if (!mLockingOnTexture.loadFromFile("media/lock-progress.png"))
-		throw std::exception("Failed to load lock-progress texture");
+	mShipTexture = ResourceCache::inst().getTexture("player" + to_string(shipID) + ".png");
+	mShieldTexture = ResourceCache::inst().getTexture("shield.png");
+	mTargetTexture = ResourceCache::inst().getTexture("target.png");
+	mLockOnTexture = ResourceCache::inst().getTexture("lock.png");
+	mLockingOnTexture = ResourceCache::inst().getTexture("lock-progress.png");
 
 	// Load gun points
 	// TODO move this to JSON
@@ -44,13 +39,13 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	}
 
 	// Set up ship sprite
-	Vec2 shipTextureSize((float)mShipTexture.getSize().x, (float)mShipTexture.getSize().y);
-	mShipSprite.setTexture(mShipTexture);
+	Vec2 shipTextureSize((float)mShipTexture->getSize().x, (float)mShipTexture->getSize().y);
+	mShipSprite.setTexture(*mShipTexture);
 	mShipSprite.setOrigin(shipTextureSize * 0.5f);
 
 	// Set up shield sprites
-	Vec2 shieldTextureSize((float)mShieldTexture.getSize().x, (float)mShieldTexture.getSize().y);
-	mShieldSprite.setTexture(mShieldTexture);
+	Vec2 shieldTextureSize((float)mShieldTexture->getSize().x, (float)mShieldTexture->getSize().y);
+	mShieldSprite.setTexture(*mShieldTexture);
 	mShieldSprite.setOrigin(shieldTextureSize * 0.5f);
 	for (uint i = 0; i < 10; ++i)
 	{
@@ -61,32 +56,30 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	}
 
 	// Set up target sprite
-	Vec2 targetTextureSize((float)mTargetTexture.getSize().x, (float)mTargetTexture.getSize().y);
-	mTargetSprite.setTexture(mTargetTexture);
+	Vec2 targetTextureSize((float)mTargetTexture->getSize().x, (float)mTargetTexture->getSize().y);
+	mTargetSprite.setTexture(*mTargetTexture);
 	mTargetSprite.setOrigin(targetTextureSize * 0.5f);
 
 	// Set up lock sprites
-	Vec2 lockOnTextureSize((float)mLockOnTexture.getSize().x, (float)mLockOnTexture.getSize().y);
-	mLockOnSprite.setTexture(mLockOnTexture);
+	Vec2 lockOnTextureSize((float)mLockOnTexture->getSize().x, (float)mLockOnTexture->getSize().y);
+	mLockOnSprite.setTexture(*mLockOnTexture);
 	mLockOnSprite.setOrigin(lockOnTextureSize * 0.5f);
-	Vec2 lockingOnTextureSize((float)mLockingOnTexture.getSize().x, (float)mLockingOnTexture.getSize().y);
-	mLockingOnSprite.setTexture(mLockingOnTexture);
+	Vec2 lockingOnTextureSize((float)mLockingOnTexture->getSize().x, (float)mLockingOnTexture->getSize().y);
+	mLockingOnSprite.setTexture(*mLockingOnTexture);
 	mLockingOnSprite.setOrigin(lockingOnTextureSize * 0.5f);
 
 	// Set up player 2 stuff
 	if (shipID == 2)
 	{
-		if (!mLaserGunTexture.loadFromFile("media/player2-laser.png"))
-			throw std::exception("Failed to load player2-laser texture");
-		if (!mLaserTexture.loadFromFile("media/laser.png"))
-			throw std::exception("Failed to load laser texture");
+		mLaserGunTexture = ResourceCache::inst().getTexture("player2-laser.png");
+		mLaserTexture = ResourceCache::inst().getTexture("laser.png");
 
 		// Set up sprites
-		Vec2 laserGunTextureSize((float)mLaserGunTexture.getSize().x, (float)mLaserGunTexture.getSize().y);
-		mLaserGunSprite.setTexture(mLaserGunTexture);
+		Vec2 laserGunTextureSize((float)mLaserGunTexture->getSize().x, (float)mLaserGunTexture->getSize().y);
+		mLaserGunSprite.setTexture(*mLaserGunTexture);
 		mLaserGunSprite.setOrigin(laserGunTextureSize * 0.5f);
-		Vec2 laserTextureSize((float)mLaserTexture.getSize().x * 0.5f, (float)mLaserTexture.getSize().y);
-		mLaserSprite.setTexture(mLaserTexture);
+		Vec2 laserTextureSize((float)mLaserTexture->getSize().x * 0.5f, (float)mLaserTexture->getSize().y);
+		mLaserSprite.setTexture(*mLaserTexture);
 		mLaserSprite.setOrigin(laserTextureSize);
 	}
 
@@ -262,8 +255,8 @@ void PlayerEntity::update(float dt)
 	}
 
 	// Check if the target touched anything
-	float targetRadiusSq = ((float)(mTargetTexture.getSize().x * mTargetTexture.getSize().x) +
-		(float)(mTargetTexture.getSize().y * mTargetTexture.getSize().y)) * 0.25f;
+	float targetRadiusSq = ((float)(mTargetTexture->getSize().x * mTargetTexture->getSize().x) +
+		(float)(mTargetTexture->getSize().y * mTargetTexture->getSize().y)) * 0.25f;
 	for (auto i = EntityManager::inst().getEntitiesBegin(); i != EntityManager::inst().getEntitiesEnd(); ++i)
 	{
 		if (*i != shared_from_this())
@@ -297,7 +290,7 @@ void PlayerEntity::update(float dt)
 
 						// Find a free lock
 						// TODO magic number
-						uint maxLocks = (uint)ceil((float)ent->getHealth() / 100.0f);
+						uint maxLocks = (uint)floor((float)ent->getHealth() / 100.0f) + 1;
 						if (lockedCounter < maxLocks && !currentlyLockingOn)
 						{
 							for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
@@ -352,7 +345,7 @@ void PlayerEntity::render(sf::RenderWindow& window)
 					float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
 					mLaserSprite.setRotation(angle);
 					mLaserSprite.setPosition(gunPosition);
-					mLaserSprite.setScale(Vec2(1.0f, distance / (float)mLaserTexture.getSize().y));
+					mLaserSprite.setScale(Vec2(1.0f, distance / (float)mLaserTexture->getSize().y));
 					window.draw(mLaserSprite);
 				}
 			}

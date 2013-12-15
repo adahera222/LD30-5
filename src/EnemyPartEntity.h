@@ -27,7 +27,7 @@ protected:
 
 	weak_ptr<EnemyEntity> mParent;
 
-	sf::Texture mTexture;
+	sf::Texture* mTexture;
 	sf::Sprite mSprite;
 
 	sf::Clock mBulletCycle;

@@ -33,7 +33,7 @@ private:
 	// Sub parts
 	vector<shared_ptr<EnemyPartEntity>> mParts;
 
-	sf::Texture mTexture; // TODO handle this in a texture manager
+	sf::Texture* mTexture; // TODO handle this in a texture manager
 	sf::Sprite mSprite;
 
 };

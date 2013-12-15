@@ -15,7 +15,7 @@ public:
 	void render(sf::RenderWindow& window);
 
 private:
-	sf::Texture mTexture;
+	sf::Texture* mTexture;
 	sf::Sprite mSprite;
 
 	float mProgress;
@@ -39,6 +39,9 @@ private:
 	sf::RenderWindow mWindow;
 
 	list<shared_ptr<Explosion>> mExplosions;
+
+	sf::Texture* mBackgroundTexture;
+	sf::Sprite mBackground;
 
 };
 

@@ -51,10 +51,10 @@
     <ClInclude Include="src\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SpecialWeapon.h">
+    <ClInclude Include="src\MissileWeaponEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\MissileSavloWeapon.h">
+    <ClInclude Include="src\SpecialWeaponEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -101,10 +101,10 @@
     <ClCompile Include="src\jsoncpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SpecialWeapon.cpp">
+    <ClCompile Include="src\MissileWeaponEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MissileSavloWeapon.cpp">
+    <ClCompile Include="src\SpecialWeaponEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

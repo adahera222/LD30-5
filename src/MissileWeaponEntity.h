@@ -1,13 +1,13 @@
 #pragma once
 
-#include "SpecialWeapon.h"
+#include "SpecialWeaponEntity.h"
 #include "DameageableEntity.h"
 
-class MissileSavloWeapon : public SpecialWeapon
+class MissileWeaponEntity : public SpecialWeaponEntity
 {
 public:
-	MissileSavloWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target);
-	virtual ~MissileSavloWeapon();
+	MissileWeaponEntity(const Vec2& startingPosition, weak_ptr<DamageableEntity> target);
+	virtual ~MissileWeaponEntity();
 
 	weak_ptr<DamageableEntity> getTarget() const;
 

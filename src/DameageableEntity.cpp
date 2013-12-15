@@ -43,10 +43,11 @@ void DamageableEntity::onCollision(shared_ptr<Entity> other)
 		bullet->despawn();
 	}
 
-	shared_ptr<SpecialWeapon> special = dynamic_pointer_cast<SpecialWeapon>(other);
-	if (special != shared_ptr<SpecialWeapon>())
+	shared_ptr<SpecialWeaponEntity> special = dynamic_pointer_cast<SpecialWeaponEntity>(other);
+	if (special != shared_ptr<SpecialWeaponEntity>())
 	{
 		// Take (lots) of damage
+		// TODO magic number
 		damage(other->getPosition() - mPosition, 100);
 		EntityManager::inst().destroyEntity(special);
 	}

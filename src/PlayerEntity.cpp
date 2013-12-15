@@ -91,7 +91,7 @@ void PlayerEntity::_specialAttack()
 	vector<shared_ptr<DamageableEntity>> entities;
 	for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
 	{
-		if ((*i).hasLock && (*i).weapon.lock() == shared_ptr<MissileSavloWeapon>())
+		if ((*i).hasLock && (*i).weapon.lock() == shared_ptr<MissileWeaponEntity>())
 		{
 			shared_ptr<DamageableEntity> entity = (*i).target.lock();
 			if (entity != shared_ptr<DamageableEntity>())
@@ -188,13 +188,13 @@ void PlayerEntity::update(float dt)
 		{
 			// Remove the lock if the target or weapon was destroyed after it was fired
 			if ((*i).target.lock() == shared_ptr<DamageableEntity>() ||
-				((*i).fired && (*i).weapon.lock() == shared_ptr<MissileSavloWeapon>()))
+				((*i).fired && (*i).weapon.lock() == shared_ptr<MissileWeaponEntity>()))
 			{
 				(*i).target = shared_ptr<DamageableEntity>();
 				(*i).lockProgress = 0.0f;
 				(*i).hasLock = false;
 				(*i).fired = false;
-				(*i).weapon = shared_ptr<MissileSavloWeapon>();
+				(*i).weapon = shared_ptr<MissileWeaponEntity>();
 			}
 			else
 			{
@@ -244,18 +244,25 @@ void PlayerEntity::update(float dt)
 					{
 						// Make sure this entity hasn't already been locked onto
 						// TODO max number of locks = ceil(health / missile damage)
-						bool lockedOn = false;
+						uint lockedCounter = 0;
+						bool currentlyLockingOn = false;
 						for (auto l = mLocks.begin(); l != mLocks.end(); ++l)
 						{
 							if ((*l).target.lock() == ent)
 							{
-								lockedOn = true;
-								break;
+								lockedCounter++;
+								if ((*l).lockProgress < 1.0f)
+								{
+									currentlyLockingOn = true;
+									break;
+								}
 							}
 						}
 
 						// Find a free lock
-						if (!lockedOn)
+						// TODO magic number
+						uint maxLocks = (uint)ceil((float)ent->getHealth() / 100.0f);
+						if (lockedCounter < maxLocks && !currentlyLockingOn)
 						{
 							for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
 							{

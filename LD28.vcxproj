@@ -20,11 +20,11 @@
     <ClInclude Include="src\EnemyPartEntity.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EntityManager.h" />
-    <ClInclude Include="src\MissileSavloWeapon.h" />
+    <ClInclude Include="src\MissileWeaponEntity.h" />
     <ClInclude Include="src\PlayerEntity.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\DameageableEntity.h" />
-    <ClInclude Include="src\SpecialWeapon.h" />
+    <ClInclude Include="src\SpecialWeaponEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp" />
@@ -41,11 +41,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\MissileSavloWeapon.cpp" />
+    <ClCompile Include="src\MissileWeaponEntity.cpp" />
     <ClCompile Include="src\PlayerEntity.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\DameageableEntity.cpp" />
-    <ClCompile Include="src\SpecialWeapon.cpp" />
+    <ClCompile Include="src\SpecialWeaponEntity.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{89DF8B0C-8A1E-48F2-A491-7A3192A0A397}</ProjectGuid>

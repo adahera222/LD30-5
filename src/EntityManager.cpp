@@ -93,9 +93,9 @@ shared_ptr<BulletEntity> EntityManager::createBullet(bool friendly)
 	return newBullet;
 }
 
-shared_ptr<MissileSavloWeapon> EntityManager::createMissileWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target)
+shared_ptr<MissileWeaponEntity> EntityManager::createMissileWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target)
 {
-	shared_ptr<MissileSavloWeapon> newMissileWeapon(new MissileSavloWeapon(startingPosition, target));
+	shared_ptr<MissileWeaponEntity> newMissileWeapon(new MissileWeaponEntity(startingPosition, target));
 	mSpecialWeapons.push_back(newMissileWeapon);
 	return newMissileWeapon;
 }
@@ -126,7 +126,7 @@ bool isOutside(const Vec2& position)
 void EntityManager::updateAll(float dt)
 {
 	vector<shared_ptr<Entity>> currentEntities = mEntities;
-	vector<shared_ptr<SpecialWeapon>> specialWeapons = mSpecialWeapons;
+	vector<shared_ptr<SpecialWeaponEntity>> specialWeapons = mSpecialWeapons;
 
 	// Update each entity
 	for (auto i = currentEntities.begin(); i != currentEntities.end(); ++i)
@@ -187,8 +187,8 @@ void EntityManager::updateAll(float dt)
 	// Special Weapons on Targets
 	for (auto i = specialWeapons.begin(); i != specialWeapons.end(); ++i)
 	{
-		shared_ptr<MissileSavloWeapon> missile = dynamic_pointer_cast<MissileSavloWeapon>(*i);
-		if (missile != shared_ptr<MissileSavloWeapon>())
+		shared_ptr<MissileWeaponEntity> missile = dynamic_pointer_cast<MissileWeaponEntity>(*i);
+		if (missile != shared_ptr<MissileWeaponEntity>())
 		{
 			shared_ptr<DamageableEntity> target = missile->getTarget().lock();
 			if (target != shared_ptr<DamageableEntity>())
@@ -246,12 +246,12 @@ vector<shared_ptr<BulletEntity>>::iterator EntityManager::getNonPlayerBulletsEnd
 	return mNonPlayerBullets.end();
 }
 
-vector<shared_ptr<SpecialWeapon>>::iterator EntityManager::getSpecialWeaponsBegin()
+vector<shared_ptr<SpecialWeaponEntity>>::iterator EntityManager::getSpecialWeaponsBegin()
 {
 	return mSpecialWeapons.begin();
 }
 
-vector<shared_ptr<SpecialWeapon>>::iterator EntityManager::getSpecialWeaponsEnd()
+vector<shared_ptr<SpecialWeaponEntity>>::iterator EntityManager::getSpecialWeaponsEnd()
 {
 	return mSpecialWeapons.end();
 }

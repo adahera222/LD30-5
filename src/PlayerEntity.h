@@ -4,7 +4,7 @@
 #define PlayerEntity_h__
 
 #include "DameageableEntity.h"
-#include "MissileSavloWeapon.h"
+#include "MissileWeaponEntity.h"
 
 struct Shield
 {
@@ -18,7 +18,7 @@ struct Lock
 	bool hasLock;
 	float lockProgress;
 	bool fired;
-	weak_ptr<MissileSavloWeapon> weapon;
+	weak_ptr<MissileWeaponEntity> weapon;
 };
 
 class PlayerEntity : public DamageableEntity, public enable_shared_from_this<PlayerEntity>

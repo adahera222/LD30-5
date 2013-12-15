@@ -1,8 +1,8 @@
 #include "Common.h"
-#include "MissileSavloWeapon.h"
+#include "MissileWeaponEntity.h"
 
-MissileSavloWeapon::MissileSavloWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target) :
-	SpecialWeapon(startingPosition),
+MissileWeaponEntity::MissileWeaponEntity(const Vec2& startingPosition, weak_ptr<DamageableEntity> target) :
+	SpecialWeaponEntity(startingPosition),
 	mTarget(target)
 {
 	mMissileTexture.loadFromFile("media/missile.png");
@@ -12,16 +12,16 @@ MissileSavloWeapon::MissileSavloWeapon(const Vec2& startingPosition, weak_ptr<Da
 	mMissileSprite.setRotation(180.0f);
 }
 
-MissileSavloWeapon::~MissileSavloWeapon()
+MissileWeaponEntity::~MissileWeaponEntity()
 {
 }
 
-weak_ptr<DamageableEntity> MissileSavloWeapon::getTarget() const
+weak_ptr<DamageableEntity> MissileWeaponEntity::getTarget() const
 {
 	return mTarget;
 }
 
-void MissileSavloWeapon::update(float dt)
+void MissileWeaponEntity::update(float dt)
 {
 	float currentAngle = mMissileSprite.getRotation();
 
@@ -52,17 +52,17 @@ void MissileSavloWeapon::update(float dt)
 	mPosition += direction * speed * dt;
 }
 
-void MissileSavloWeapon::render(sf::RenderWindow& window)
+void MissileWeaponEntity::render(sf::RenderWindow& window)
 {
 	mMissileSprite.setPosition(mPosition);
 	window.draw(mMissileSprite);
 }
 
-void MissileSavloWeapon::onCollision(shared_ptr<Entity> other)
+void MissileWeaponEntity::onCollision(shared_ptr<Entity> other)
 {
 }
 
-sf::Sprite& MissileSavloWeapon::getSprite()
+sf::Sprite& MissileWeaponEntity::getSprite()
 {
 	return mMissileSprite;
 }

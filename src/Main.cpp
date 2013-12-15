@@ -5,6 +5,7 @@
 
 int main(int argc, char** argv)
 {
+	/*
 	try
 	{
 		return Game::run();
@@ -12,7 +13,8 @@ int main(int argc, char** argv)
 	catch (std::runtime_error& e)
 	{
 		MessageBoxA(NULL, e.what(), "Error", MB_ICONERROR | MB_OK);
-	}
+	}*/
+	return Game::run();
 }
 
 // Win32 Main

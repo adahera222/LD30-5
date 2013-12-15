@@ -84,7 +84,7 @@ EntityManager::~EntityManager()
 
 shared_ptr<PlayerEntity> EntityManager::createPlayer(const Vec2& position, uint shipID)
 {
-	assert(mPlayer == shared_ptr<PlayerEntity>());
+	assert(mPlayer.lock() == shared_ptr<PlayerEntity>());
 	shared_ptr<PlayerEntity> newPlayer(new PlayerEntity(position, shipID));
 	mEntities.push_back(newPlayer);
 	mPlayer = newPlayer;
@@ -132,7 +132,7 @@ shared_ptr<LaserWeaponEntity> EntityManager::createLaserWeapon(const Vec2& start
 
 shared_ptr<PlayerEntity> EntityManager::getPlayer() const
 {
-	return mPlayer;
+	return mPlayer.lock();
 }
 
 void EntityManager::destroyEntity(shared_ptr<Entity> ent)
@@ -157,6 +157,7 @@ void EntityManager::updateAll(float dt)
 {
 	vector<shared_ptr<Entity>> currentEntities = mEntities;
 	vector<shared_ptr<SpecialWeaponEntity>> specialWeapons = mSpecialWeapons;
+	shared_ptr<PlayerEntity> player = mPlayer.lock();
 
 	// Update each entity
 	for (auto i = currentEntities.begin(); i != currentEntities.end(); ++i)
@@ -197,7 +198,7 @@ void EntityManager::updateAll(float dt)
 			}
 		}
 
-		if (*i != mPlayer)
+		if (*i != player)
 		{
 			// Player Bullet on Entity
 			for (auto j = mPlayerBullets.begin(); j != mPlayerBullets.end(); ++j)
@@ -233,14 +234,17 @@ void EntityManager::updateAll(float dt)
 	}
 
 	// Non-player bullets on Player
-	for (auto i = mNonPlayerBullets.begin(); i != mNonPlayerBullets.end(); ++i)
+	if (player != shared_ptr<PlayerEntity>())
 	{
-		if ((*i)->isActive())
+		for (auto i = mNonPlayerBullets.begin(); i != mNonPlayerBullets.end(); ++i)
 		{
-			if (Collision::PixelPerfectTest((*i)->getSprite(), mPlayer->getSprite()))
+			if ((*i)->isActive())
 			{
-				(*i)->onCollision(mPlayer);
-				mPlayer->onCollision(*i);
+				if (Collision::PixelPerfectTest((*i)->getSprite(), player->getSprite()))
+				{
+					(*i)->onCollision(player);
+					player->onCollision(*i);
+				}
 			}
 		}
 	}

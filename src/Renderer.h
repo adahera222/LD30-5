@@ -31,7 +31,9 @@ public:
 	void createExplosion(const Vec2& position, float size);
 
 	void processEvents();
+	void beginRender();
 	void render(float dt);
+	void display();
 
 	sf::RenderWindow& getWindow();
 

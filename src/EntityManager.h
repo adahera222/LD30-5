@@ -41,7 +41,7 @@ public:
 private:
 	map<string, EnemyDesc> mEnemyDescs;
 
-	shared_ptr<PlayerEntity> mPlayer;
+	weak_ptr<PlayerEntity> mPlayer;
 	vector<shared_ptr<Entity>> mEntities;
 	vector<shared_ptr<BulletEntity>> mPlayerBullets; // bullets are stored seperately for collision detection
 	vector<shared_ptr<BulletEntity>> mNonPlayerBullets; // bullets are stored seperately for collision detection

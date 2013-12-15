@@ -89,10 +89,13 @@ void Renderer::processEvents()
 	}
 }
 
+void Renderer::beginRender()
+{
+	//mWindow.clear(sf::Color::Black);
+}
+
 void Renderer::render(float dt)
 {
-	mWindow.clear(sf::Color::Black);
-
 	// Draw background
 	mWindow.draw(mBackground);
 
@@ -105,7 +108,9 @@ void Renderer::render(float dt)
 		(*i)->render(mWindow);
 	for (auto i = EntityManager::inst().getSpecialWeaponsBegin(); i != EntityManager::inst().getSpecialWeaponsEnd(); ++i)
 		(*i)->render(mWindow);
-	EntityManager::inst().getPlayer()->_drawLocks(mWindow);
+
+	if (EntityManager::inst().getPlayer() != shared_ptr<PlayerEntity>())
+		EntityManager::inst().getPlayer()->_drawLocks(mWindow);
 
 	// Update effects
 	for (auto i = mExplosions.begin(); i != mExplosions.end();)
@@ -120,7 +125,10 @@ void Renderer::render(float dt)
 			++i;
 		}
 	}
+}
 
+void Renderer::display()
+{
 	mWindow.display();
 }
 

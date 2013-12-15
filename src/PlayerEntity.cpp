@@ -4,6 +4,7 @@
 #include "PlayerEntity.h"
 #include "BulletManager.h"
 #include "EntityManager.h"
+#include "Renderer.h"
 
 PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	DamageableEntity(position, 1000, false),
@@ -106,6 +107,11 @@ void PlayerEntity::damage(const Vec2& direction, uint damageTaken)
 	_hitShield(direction);
 }
 
+float PlayerEntity::getRemainingBulletTime() const
+{
+	return mRemainingBulletTime;
+}
+
 bool PlayerEntity::inBulletTime() const
 {
 	return mBulletTime;
@@ -183,6 +189,17 @@ void PlayerEntity::_drawLocks(sf::RenderWindow& window)
 
 void PlayerEntity::update(float dt)
 {
+	// Death
+	if (mHealth <= 0)
+	{
+		EntityManager::inst().destroyEntity(shared_from_this());
+
+		// Spawn explosion
+		Renderer::inst().createExplosion(mPosition, (float)mShipTexture->getSize().x);
+
+		Game::onDeath();
+	}
+
 	// Handle controls
 	static const float MAX_VELOCITY = 300.0f;
 	static const float ACCELERATION = 2000.0f;
@@ -198,6 +215,7 @@ void PlayerEntity::update(float dt)
 
 	// Bullet time
 	mBulletTime = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+	mRemainingBulletTime = step(mRemainingBulletTime, mBulletTime ? 0.0f : 1.0f, 5.0f * dt);
 
 	// Shooting
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
@@ -376,7 +394,7 @@ void PlayerEntity::onCollision(shared_ptr<Entity> other)
 	if (bullet != shared_ptr<BulletEntity>())
 	{
 		// Take damage
-		damage(other->getPosition() - mPosition, 100);
+		damage(other->getPosition() - mPosition, 50);
 
 		// Despawn the bullet
 		bullet->despawn();

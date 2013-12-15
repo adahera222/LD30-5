@@ -11,10 +11,13 @@ EnemyPartEntity::EnemyPartEntity(EnemyPartDesc& desc, shared_ptr<EnemyEntity> pa
 	mDesc(desc),
 	mParent(parent)
 {
-	mTexture = ResourceCache::inst().getTexture(desc.sprite);
-	Vec2 textureSize((float)mTexture->getSize().x, (float)mTexture->getSize().y);
-	mSprite.setTexture(*mTexture);
-	mSprite.setOrigin(textureSize * 0.5f);
+	if (desc.sprite.length() > 0)
+	{
+		mTexture = ResourceCache::inst().getTexture(desc.sprite);
+		Vec2 textureSize((float)mTexture->getSize().x, (float)mTexture->getSize().y);
+		mSprite.setTexture(*mTexture);
+		mSprite.setOrigin(textureSize * 0.5f);
+	}
 	mSprite.setRotation(desc.rotation);
 }
 
@@ -38,7 +41,12 @@ void EnemyPartEntity::update(float dt)
 	assert(parent != shared_ptr<EnemyEntity>());
 
 	Vec2 worldPosition = mPosition + parent->getPosition();
-	Vec2 playerDirection = worldPosition - EntityManager::inst().getPlayer()->getPosition();
+
+	Vec2 playerDirection;
+	if (EntityManager::inst().getPlayer() != shared_ptr<PlayerEntity>())
+		playerDirection = worldPosition - EntityManager::inst().getPlayer()->getPosition();
+	else
+		playerDirection = Vec2(0.0f, -1.0f);
 
 	// Aim at the player
 	if (!mDesc.fixed)
@@ -76,7 +84,7 @@ void EnemyPartEntity::onCollision(shared_ptr<Entity> other)
 	DamageableEntity::onCollision(other);
 
 	// If we're dead - remove ourselves
-	if (mHealth < 0)
+	if (mHealth <= 0)
 		EntityManager::inst().destroyEntity(shared_from_this());
 }
 

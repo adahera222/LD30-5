@@ -78,7 +78,7 @@ void EnemyEntity::onCollision(shared_ptr<Entity> other)
 	DamageableEntity::onCollision(other);
 
 	// If we're dead - remove ourselves
-	if (mHealth < 0)
+	if (mHealth <= 0)
 	{
 		EntityManager::inst().destroyEntity(shared_from_this());
 

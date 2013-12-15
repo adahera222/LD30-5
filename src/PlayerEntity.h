@@ -27,6 +27,7 @@ public:
 	PlayerEntity(const Vec2& position, uint shipID);
 	virtual ~PlayerEntity();
 
+	float getRemainingBulletTime() const;
 	bool inBulletTime() const;
 
 	void _specialAttack();
@@ -44,6 +45,7 @@ private:
 	uint mShipID;
 
 	// Bullet Time
+	float mRemainingBulletTime;
 	bool mBulletTime;
 
 	// Shooting

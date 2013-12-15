@@ -7,8 +7,13 @@
 EnemyEntity::EnemyEntity(const Vec2& position, EnemyDesc& desc) :
 	DamageableEntity(position, desc.health, true),
 	mDesc(desc),
-	mSpeed(desc.speed)
+	mTimer(0.0f)
 {
+	if (desc.timeline.size() > 0)
+		mSpeed = desc.timeline.front().speed;
+	else
+		mSpeed = desc.speed;
+
 	// TODO: ERROR CHECKING
 	mTexture.loadFromFile("media/" + desc.sprite);
 	Vec2 textureSize((float)mTexture.getSize().x, (float)mTexture.getSize().y);
@@ -44,7 +49,21 @@ void EnemyEntity::damage(const Vec2& direction, uint damageTaken)
 
 void EnemyEntity::update(float dt)
 {
-	mPosition += Vec2(0.0f, mSpeed * dt);
+	mTimer += dt;
+
+	// Apply timeline actions
+	if (mTimer && mDesc.timeline.size() > 0)
+	{
+		while (mTimer > mDesc.timeline.front().time)
+		{
+			mSpeed = mDesc.timeline.front().speed;
+			mDesc.timeline.pop_front();
+			if (mDesc.timeline.size() == 0)
+				break;
+		}
+	}
+
+	mPosition += mSpeed * dt;
 }
 
 void EnemyEntity::render(sf::RenderWindow& window)

@@ -27,7 +27,8 @@ public:
 private:
 	EnemyDesc mDesc;
 
-	float mSpeed;
+	float mTimer;
+	Vec2 mSpeed;
 
 	// Sub parts
 	vector<shared_ptr<EnemyPartEntity>> mParts;

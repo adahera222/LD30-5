@@ -21,15 +21,38 @@ EntityManager::EntityManager()
 		enemyDesc.name = enemy["Name"].asString();
 		enemyDesc.sprite = enemy["Sprite"].asString();
 		enemyDesc.health = enemy["Health"].asUInt();
-		enemyDesc.speed = enemy["Speed"].asFloat();
+		enemyDesc.speed.x = enemy.get("Speed", Json::arrayValue).get((Json::ArrayIndex)0, 0.0f).asFloat();
+		enemyDesc.speed.y = enemy.get("Speed", Json::arrayValue).get((Json::ArrayIndex)1, 0.0f).asFloat();
+		
+		// Set up limeline
+		if (enemy.isMember("Timeline"))
+		{
+			// Load timeline file
+			ifstream timeline("media/" + enemy["Timeline"].asString());
+			Json::Value timelineRoot;
+			if (!reader.parse(timeline, timelineRoot))
+				throw std::runtime_error("Error in timeline - " + reader.getFormattedErrorMessages());
+
+			for (Json::ValueIterator j = timelineRoot.begin(); j != timelineRoot.end(); ++j)
+			{
+				const Json::Value& ev = *j;
+
+				EnemyDescTimelineEvent e;
+				e.time = ev.get("Time", 0.0f).asFloat();
+				e.speed.x = ev.get("Speed", Json::arrayValue).get((Json::ArrayIndex)0, 0.0f).asFloat();
+				e.speed.y = ev.get("Speed", Json::arrayValue).get((Json::ArrayIndex)1, 0.0f).asFloat();
+
+				enemyDesc.timeline.push_back(e);
+			}
+		}
 
 		// Add parts
 		if (enemy.isMember("Parts"))
 		{
 			const Json::Value& partsList = enemy["Parts"];
-			for (Json::ValueIterator l = partsList.begin(); l != partsList.end(); ++l)
+			for (Json::ValueIterator j = partsList.begin(); j != partsList.end(); ++j)
 			{
-				Json::Value& part = *l;
+				Json::Value& part = *j;
 
 				// Fill in part data
 				EnemyPartDesc partDesc;

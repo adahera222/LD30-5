@@ -86,12 +86,19 @@ struct EnemyPartDesc
 	bool lockable;
 };
 
+struct EnemyDescTimelineEvent
+{
+	float time;
+	Vec2 speed;
+};
+
 struct EnemyDesc
 {
 	string name;
 	string sprite;
 	uint health;
-	float speed;
+	Vec2 speed;
+	list<EnemyDescTimelineEvent> timeline;
 	vector<EnemyPartDesc> parts;
 };
 

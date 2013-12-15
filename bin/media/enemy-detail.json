@@ -3,7 +3,7 @@
 		"Name":"enemy1",
 		"Sprite":"enemy1.png",
 		"Health":50,
-		"Speed":50,
+		"Speed":[0.0, 50.0],
 		"Parts":
 		[
 			{
@@ -18,7 +18,7 @@
 		"Name":"enemy2",
 		"Sprite":"enemy2.png",
 		"Health":40,
-		"Speed":50,
+		"Speed":[0.0, 50.0],
 		"Parts":
 		[
 			{
@@ -33,7 +33,7 @@
 		"Name":"boss1",
 		"Sprite":"boss1.png",
 		"Health":10000,
-		"Speed":10,
+		"Timeline":"boss-timeline.json",
 		"Parts":
 		[
 			{

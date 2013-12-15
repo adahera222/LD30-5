@@ -2,16 +2,14 @@
 	{
 		"Name":"enemy1",
 		"Sprite":"enemy1.png",
-		"Health":10,
+		"Health":50,
 		"Speed":50,
 		"Parts":
 		[
 			{
 				"Sprite":"enemy1-gun.png",
-				"Health":99999,
-				"Speed":200,
-				"Position":[0, 0],
-				"Rotation":0,
+				"BulletSpeed":250,
+				"BulletInterval":1,
 				"Fixed":false
 			}
 		]
@@ -19,17 +17,15 @@
 	{
 		"Name":"enemy2",
 		"Sprite":"enemy2.png",
-		"Health":5,
+		"Health":40,
 		"Speed":50,
 		"Parts":
 		[
 			{
 				"Sprite":"",
-				"Health":99999,
-				"Speed":200,
-				"Position":[0, 0],
+				"BulletSpeed":200,
+				"BulletInterval":1,
 				"Rotation":180,
-				"Fixed":true
 			}
 		]
 	},
@@ -43,34 +39,40 @@
 			{
 				"Sprite":"enemy1-gun.png",
 				"Health":500,
-				"Speed":250,
+				"BulletSpeed":250,
+				"BulletInterval":0.25,
 				"Position":[-60, -16],
-				"Rotation":0,
-				"Fixed":false
+				"Fixed":false,
+				"Lockable":true
 			},
 			{
 				"Sprite":"enemy1-gun.png",
 				"Health":500,
-				"Speed":250,
+				"BulletSpeed":250,
+				"BulletInterval":0.25,
 				"Position":[60, -16],
-				"Rotation":0,
-				"Fixed":false
+				"Fixed":false,
+				"Lockable":true
 			},
 			{
 				"Sprite":"boss1-forward-gun.png",
 				"Health":500,
-				"Speed":200,
+				"BulletSpeed":250,
+				"BulletInterval":0.5,
 				"Position":[-46, 17],
 				"Rotation":180,
-				"Fixed":true
+				"Fixed":true,
+				"Lockable":true
 			},
 			{
 				"Sprite":"boss1-forward-gun.png",
 				"Health":500,
-				"Speed":200,
+				"BulletSpeed":250,
+				"BulletInterval":0.5,
 				"Position":[46, 17],
 				"Rotation":180,
-				"Fixed":true
+				"Fixed":true,
+				"Lockable":true
 			}
 		]
 	}

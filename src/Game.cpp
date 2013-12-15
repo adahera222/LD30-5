@@ -18,9 +18,10 @@ int Game::run()
 
 	sf::Clock scoreTimer;
 	sf::Clock spawnTimer;
-	weak_ptr<EnemyEntity> boss;// = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
+	weak_ptr<EnemyEntity> boss = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
 	int score = 0;
-	int rowSize = 4;
+	int initialRowSize = 4;
+	int rowSize = initialRowSize;
 	float spawnTime = 5.0f;
 
 	// Run the program as long as the window is open
@@ -41,7 +42,7 @@ int Game::run()
 
 			// Increase difficulty
 			if (score < 10000)
-				rowSize = 2 + score / 1000;
+				rowSize = initialRowSize + score / 1000;
 
 			// Spawn boss at some time
 

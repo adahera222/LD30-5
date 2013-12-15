@@ -8,14 +8,18 @@
 class DamageableEntity : public Entity
 {
 public:
-	DamageableEntity(const Vec2& position, int health);
+	DamageableEntity(const Vec2& position, int health, bool lockable);
 	virtual ~DamageableEntity();
 
+	bool isLockable() const;
+
+	// Inherited from Entity
 	virtual void damage(const Vec2& direction, uint damageTaken);
 	virtual void onCollision(shared_ptr<Entity> other);
 
 protected:
 	int mHealth;
+	bool mLockable;
 
 };
 

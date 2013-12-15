@@ -51,6 +51,7 @@ void Renderer::render()
 		(*i)->render(mWindow);
 	for (auto i = EntityManager::inst().getSpecialWeaponsBegin(); i != EntityManager::inst().getSpecialWeaponsEnd(); ++i)
 		(*i)->render(mWindow);
+	EntityManager::inst().getPlayer()->_drawLocks(mWindow);
 
 	mWindow.display();
 }

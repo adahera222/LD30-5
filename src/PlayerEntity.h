@@ -4,6 +4,7 @@
 #define PlayerEntity_h__
 
 #include "DameageableEntity.h"
+#include "MissileSavloWeapon.h"
 
 struct Shield
 {
@@ -13,9 +14,11 @@ struct Shield
 
 struct Lock
 {
-	weak_ptr<DamageableEntity> entity;
+	weak_ptr<DamageableEntity> target;
 	bool hasLock;
 	float lockProgress;
+	bool fired;
+	weak_ptr<MissileSavloWeapon> weapon;
 };
 
 class PlayerEntity : public DamageableEntity, public enable_shared_from_this<PlayerEntity>
@@ -28,6 +31,7 @@ public:
 
 	void _specialAttack();
 	void _hitShield(const Vec2& direction);
+	void _drawLocks(sf::RenderWindow& window);
 
 	// Inherited from ShipEntity
 	virtual void damage(const Vec2& direction, uint damageTaken);

@@ -7,7 +7,7 @@
 #include "BulletManager.h"
 
 EnemyPartEntity::EnemyPartEntity(EnemyPartDesc& desc, shared_ptr<EnemyEntity> parent) :
-	DamageableEntity(desc.position, desc.health),
+	DamageableEntity(desc.position, desc.health, desc.lockable),
 	mDesc(desc),
 	mParent(parent)
 {
@@ -49,10 +49,10 @@ void EnemyPartEntity::update(float dt)
 
 	// Fire bullets
 	Vec2 velocity(sin(mSprite.getRotation() * DEG_TO_RAD), -cos(mSprite.getRotation() * DEG_TO_RAD));
-	velocity *= mDesc.speed;
+	velocity *= mDesc.bulletSpeed;
 	if (worldPosition.y >= 0.0f && worldPosition.y < Game::SCREEN_HEIGHT)
 	{
-		if (mBulletCycle.getElapsedTime().asSeconds() > 1.0f / Game::getTimeRate())
+		if (mBulletCycle.getElapsedTime().asSeconds() > mDesc.bulletInterval / Game::getTimeRate())
 		{
 			BulletManager::inst().spawn(worldPosition, velocity, parent, BT_ENEMY_COMMON, false);
 			mBulletCycle.restart();

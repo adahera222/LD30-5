@@ -9,6 +9,8 @@ public:
 	MissileSavloWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target);
 	virtual ~MissileSavloWeapon();
 
+	weak_ptr<DamageableEntity> getTarget() const;
+
 	// Inherited from SpecialWeapon
 	virtual void update(float dt);
 	virtual void render(sf::RenderWindow& window);

@@ -6,7 +6,7 @@
 #include "EntityManager.h"
 
 PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
-	DamageableEntity(position, 1000),
+	DamageableEntity(position, 1000, false),
 	mShipID(shipID)
 {
 	// Load textures
@@ -91,23 +91,21 @@ void PlayerEntity::_specialAttack()
 	vector<shared_ptr<DamageableEntity>> entities;
 	for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
 	{
-		if ((*i).hasLock)
+		if ((*i).hasLock && (*i).weapon.lock() == shared_ptr<MissileSavloWeapon>())
 		{
-			shared_ptr<DamageableEntity> entity = (*i).entity.lock();
+			shared_ptr<DamageableEntity> entity = (*i).target.lock();
 			if (entity != shared_ptr<DamageableEntity>())
-				entities.push_back(entity);
-			(*i).hasLock = false;
-			(*i).lockProgress = 0.0f;
+			{
+				// Do something depending on currently selected player
+				// TODO: script this
+
+				// Player 1
+				// Fire a savlo of missiles from the back of the ship
+				(*i).weapon = EntityManager::inst().createMissileWeapon(mPosition, entity);
+			}
+			(*i).fired = true;
 		}
 	}
-
-	// Do something depending on currently selected player
-	// TODO: script this
-
-	// Player 1
-	// Fire a savlo of missiles from the back of the ship
-	for (auto i = entities.begin(); i != entities.end(); ++i)
-		EntityManager::inst().createMissileWeapon(mPosition, *i);
 }
 
 void PlayerEntity::_hitShield(const Vec2& direction)
@@ -123,6 +121,35 @@ void PlayerEntity::_hitShield(const Vec2& direction)
 	list<Shield>::iterator newFront = front;
 	advance(newFront, 1);
 	rotate(front, newFront, mShields.end());
+}
+
+void PlayerEntity::_drawLocks(sf::RenderWindow& window)
+{
+	// Draw lock ons
+	static const float maxScale = 10.0f;
+	for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
+	{
+		if ((*i).hasLock)
+		{
+			shared_ptr<DamageableEntity> entity = (*i).target.lock();
+			if (entity)
+			{
+				if ((*i).lockProgress < 1.0f)
+				{
+					mLockingOnSprite.setPosition(entity->getSprite().getPosition());
+					float scale = maxScale - (maxScale - 1) * (*i).lockProgress;
+					mLockingOnSprite.setScale(scale, scale);
+					mLockingOnSprite.setColor(sf::Color(255, 255, 255, (sf::Uint8)(255.0f * (*i).lockProgress)));
+					window.draw(mLockingOnSprite);
+				}
+				else
+				{
+					mLockOnSprite.setPosition(entity->getSprite().getPosition());
+					window.draw(mLockOnSprite);
+				}
+			}
+		}
+	}
 }
 
 void PlayerEntity::update(float dt)
@@ -155,18 +182,19 @@ void PlayerEntity::update(float dt)
 	}
 
 	// Advance locks
-	uint noLocks = 0;
 	for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
 	{
 		if ((*i).hasLock)
 		{
-			noLocks++;
-			shared_ptr<DamageableEntity> entity = (*i).entity.lock();
-			if (entity == shared_ptr<DamageableEntity>())
+			// Remove the lock if the target or weapon was destroyed after it was fired
+			if ((*i).target.lock() == shared_ptr<DamageableEntity>() ||
+				((*i).fired && (*i).weapon.lock() == shared_ptr<MissileSavloWeapon>()))
 			{
-				(*i).entity = shared_ptr<DamageableEntity>();
+				(*i).target = shared_ptr<DamageableEntity>();
 				(*i).lockProgress = 0.0f;
 				(*i).hasLock = false;
+				(*i).fired = false;
+				(*i).weapon = shared_ptr<MissileSavloWeapon>();
 			}
 			else
 			{
@@ -178,7 +206,7 @@ void PlayerEntity::update(float dt)
 	}
 
 	// Special attack
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && noLocks > 0)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		_specialAttack();
 
 	// Update velocity
@@ -216,7 +244,7 @@ void PlayerEntity::update(float dt)
 					bool lockedOn = false;
 					for (auto l = mLocks.begin(); l != mLocks.end(); ++l)
 					{
-						if ((*l).entity.lock() == ent)
+						if ((*l).target.lock() == ent)
 						{
 							lockedOn = true;
 							break;
@@ -224,7 +252,7 @@ void PlayerEntity::update(float dt)
 						shared_ptr<EnemyPartEntity> part = dynamic_pointer_cast<EnemyPartEntity>(ent);
 						if (part != shared_ptr<EnemyPartEntity>())
 						{
-							if ((*l).entity.lock() == part->getParent().lock())
+							if ((*l).target.lock() == part->getParent().lock())
 							{
 								lockedOn = true;
 								break;
@@ -242,7 +270,8 @@ void PlayerEntity::update(float dt)
 							{
 								(*i).hasLock = true;
 								(*i).lockProgress = 0.0f;
-								(*i).entity = ent;
+								(*i).target = ent;
+								(*i).fired = false;
 								break;
 							}
 						}
@@ -260,32 +289,6 @@ void PlayerEntity::render(sf::RenderWindow& window)
 
 	mTargetSprite.setPosition(mPosition + Vec2(0.0f, -250.0f));
 	window.draw(mTargetSprite);
-
-	// Draw lock ons
-	static const float maxScale = 10.0f;
-	for (auto i = mLocks.begin(); i != mLocks.end(); ++i)
-	{
-		if ((*i).hasLock)
-		{
-			shared_ptr<DamageableEntity> entity = (*i).entity.lock();
-			if (entity)
-			{
-				if ((*i).lockProgress < 1.0f)
-				{
-					mLockingOnSprite.setPosition(entity->getSprite().getPosition());
-					float scale = maxScale - (maxScale - 1) * (*i).lockProgress;
-					mLockingOnSprite.setScale(scale, scale);
-					mLockingOnSprite.setColor(sf::Color(255, 255, 255, (sf::Uint8)(255.0f * (*i).lockProgress)));
-					window.draw(mLockingOnSprite);
-				}
-				else
-				{
-					mLockOnSprite.setPosition(entity->getSprite().getPosition());
-					window.draw(mLockOnSprite);
-				}
-			}
-		}
-	}
 
 	// Draw shields
 	for (auto i = mShields.begin(); i != mShields.end(); ++i)

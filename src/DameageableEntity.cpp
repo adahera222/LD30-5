@@ -5,14 +5,20 @@
 #include "BulletEntity.h"
 #include "EntityManager.h"
 
-DamageableEntity::DamageableEntity(const Vec2& position, int health) :
+DamageableEntity::DamageableEntity(const Vec2& position, int health, bool lockable) :
 	Entity(position),
-	mHealth(health)
+	mHealth(health),
+	mLockable(lockable)
 {
 }
 
 DamageableEntity::~DamageableEntity()
 {
+}
+
+bool DamageableEntity::isLockable() const
+{
+	return mLockable;
 }
 
 void DamageableEntity::damage(const Vec2& direction, uint damageTaken)

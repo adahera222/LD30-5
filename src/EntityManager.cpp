@@ -24,20 +24,22 @@ EntityManager::EntityManager()
 		// Add parts
 		if (enemy.isMember("Parts"))
 		{
-			const Json::Value& partsList = enemy["Parts"];
+			const Json::Value& partsList = enemy.get("Parts", Json::arrayValue);
 			for (Json::ValueIterator l = partsList.begin(); l != partsList.end(); ++l)
 			{
 				Json::Value& part = *l;
 
 				// Fill in part data
 				EnemyPartDesc partDesc;
-				partDesc.sprite = part["Sprite"].asString();
-				partDesc.health = part["Health"].asUInt();
-				partDesc.speed = part["Speed"].asFloat();
-				partDesc.position.x = part["Position"][0].asFloat();
-				partDesc.position.y = part["Position"][1].asFloat();
-				partDesc.rotation = part["Rotation"].asFloat();
-				partDesc.fixed = part["Fixed"].asBool();
+				partDesc.sprite = part.get("Sprite", "").asString();
+				partDesc.health = part.get("Health", 999999).asUInt();
+				partDesc.bulletSpeed = part.get("BulletSpeed", 250.0f).asFloat();
+				partDesc.bulletInterval = part.get("BulletInterval", 0.25f).asFloat();
+				partDesc.position.x = part.get("Position", Json::arrayValue).get((Json::ArrayIndex)0, 0.0f).asFloat();
+				partDesc.position.y = part.get("Position", Json::arrayValue).get((Json::ArrayIndex)1, 0.0f).asFloat();
+				partDesc.rotation = part.get("Rotation", 0.0f).asFloat();
+				partDesc.fixed = part.get("Fixed", true).asBool();
+				partDesc.lockable = part.get("Lockable", false).asBool();
 
 				enemyDesc.parts.push_back(partDesc);
 			}
@@ -112,10 +114,11 @@ void EntityManager::destroyEntity(shared_ptr<Entity> ent)
 	mEntities.erase(remove(mEntities.begin(), mEntities.end(), ent), mEntities.end());
 }
 
-bool isOutside(const Vec2& position, bool aboveScreen = true)
+bool isOutside(const Vec2& position)
 {
-	return position.x < 0.0f || position.x > Game::SCREEN_WIDTH || 
-		(aboveScreen && position.y < 0.0f) || position.y > Game::SCREEN_HEIGHT;
+	float padding = 150.0f;
+	return position.x < -padding || position.x >(Game::SCREEN_WIDTH + padding) ||
+		position.y < -padding || position.y >(Game::SCREEN_HEIGHT + padding);
 }
 
 void EntityManager::updateAll(float dt)
@@ -127,7 +130,7 @@ void EntityManager::updateAll(float dt)
 	for (auto i = currentEntities.begin(); i != currentEntities.end(); ++i)
 	{
 		(*i)->update(dt);
-		if (isOutside((*i)->getPosition(), false))
+		if (isOutside((*i)->getPosition()))
 			destroyEntity(*i);
 	}
 	for (auto i = mPlayerBullets.begin(); i != mPlayerBullets.end(); ++i)
@@ -176,14 +179,22 @@ void EntityManager::updateAll(float dt)
 					}
 				}
 			}
+		}
+	}
 
-			// Special Weapon on Entity
-			for (auto j = specialWeapons.begin(); j != specialWeapons.end(); ++j)
+	// Special Weapons on Targets
+	for (auto i = specialWeapons.begin(); i != specialWeapons.end(); ++i)
+	{
+		shared_ptr<MissileSavloWeapon> missile = dynamic_pointer_cast<MissileSavloWeapon>(*i);
+		if (missile != shared_ptr<MissileSavloWeapon>())
+		{
+			shared_ptr<DamageableEntity> target = missile->getTarget().lock();
+			if (target != shared_ptr<DamageableEntity>())
 			{
-				if (Collision::CircleTest((*i)->getSprite(), (*j)->getSprite()))
+				if (Collision::PixelPerfectTest((*i)->getSprite(), target->getSprite()))
 				{
-					(*i)->onCollision(*j);
-					(*j)->onCollision(*i);
+					(*i)->onCollision(target);
+					target->onCollision(*i);
 				}
 			}
 		}

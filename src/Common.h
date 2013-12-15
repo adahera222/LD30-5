@@ -78,10 +78,12 @@ struct EnemyPartDesc
 {
 	string sprite;
 	uint health;
-	float speed;
+	float bulletSpeed;
+	float bulletInterval;
 	Vec2 position;
 	float rotation;
 	bool fixed;
+	bool lockable;
 };
 
 struct EnemyDesc

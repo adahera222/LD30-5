@@ -5,7 +5,7 @@
 #include "EntityManager.h"
 
 EnemyEntity::EnemyEntity(const Vec2& position, EnemyDesc& desc) :
-	DamageableEntity(position, desc.health),
+	DamageableEntity(position, desc.health, true),
 	mDesc(desc),
 	mSpeed(desc.speed)
 {

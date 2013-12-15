@@ -16,15 +16,17 @@ MissileSavloWeapon::~MissileSavloWeapon()
 {
 }
 
+weak_ptr<DamageableEntity> MissileSavloWeapon::getTarget() const
+{
+	return mTarget;
+}
+
 void MissileSavloWeapon::update(float dt)
 {
 	float currentAngle = mMissileSprite.getRotation();
 
-	// Move
-	Vec2 direction(sin(currentAngle * DEG_TO_RAD), -cos(currentAngle * DEG_TO_RAD));
-	mPosition += direction * 600.0f * dt;
-
 	// Rotate towards target using lerp
+	float speed = 600.0f;
 	shared_ptr<DamageableEntity> target = mTarget.lock();
 	if (target != shared_ptr<DamageableEntity>())
 	{
@@ -40,8 +42,14 @@ void MissileSavloWeapon::update(float dt)
 			while (targetAngle - currentAngle < -180.0f)
 				targetAngle += 360.0f;
 		}
-		mMissileSprite.setRotation(step(currentAngle, targetAngle, 400.0f * dt));
+		float swayFactor = 1.0f + sin(random(0.0f, TWO_PI));
+		mMissileSprite.setRotation(step(currentAngle, targetAngle, 500.0f * swayFactor * dt));
+		speed = 600.0f / (1.0f + abs(targetAngle - currentAngle) / 180.0f);
 	}
+
+	// Move
+	Vec2 direction(sin(currentAngle * DEG_TO_RAD), -cos(currentAngle * DEG_TO_RAD));
+	mPosition += direction * speed * dt;
 }
 
 void MissileSavloWeapon::render(sf::RenderWindow& window)

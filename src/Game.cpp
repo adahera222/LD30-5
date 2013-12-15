@@ -14,7 +14,8 @@ int Game::run()
 
 	// SURVIVAL MODE:
 	// Score slowly increases, number of players and rate of spawn is proportional to score
-	EntityManager::inst().createPlayer(Vec2((float)Game::SCREEN_WIDTH / 2, (float)Game::SCREEN_HEIGHT * 2.0f / 3.0f), 1);
+	int shipID = 2;
+	EntityManager::inst().createPlayer(Vec2((float)Game::SCREEN_WIDTH / 2, (float)Game::SCREEN_HEIGHT * 2.0f / 3.0f), shipID);
 
 	sf::Clock scoreTimer;
 	sf::Clock spawnTimer;
@@ -47,16 +48,16 @@ int Game::run()
 			// Spawn boss at some time
 
 		}
-// 		if (boss.lock() == shared_ptr<EnemyEntity>())
-// 		{
-// 			if (spawnTimer.getElapsedTime().asSeconds() > 4.0f / getTimeRate())
-// 			{
-// 				string enemy = rowSize % 2 == 0 ? "enemy1" : "enemy2";
-// 				for (int x = 1; x < (rowSize + 1); x++)
-// 					EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1), -16.0f), enemy);
-// 				spawnTimer.restart();
-// 			}
-// 		}
+		if (boss.lock() == shared_ptr<EnemyEntity>())
+		{
+			if (spawnTimer.getElapsedTime().asSeconds() > 4.0f / getTimeRate())
+			{
+				string enemy = rowSize % 2 == 0 ? "enemy1" : "enemy2";
+				for (int x = 1; x < (rowSize + 1); x++)
+					EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1), -16.0f), enemy);
+				spawnTimer.restart();
+			}
+		}
 
 		// Run a frame
 		Renderer::inst().processEvents();

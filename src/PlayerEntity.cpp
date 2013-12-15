@@ -10,7 +10,7 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	mShipID(shipID)
 {
 	// Load textures
-	if (!mShipTexture.loadFromFile("media/player1.png"))
+	if (!mShipTexture.loadFromFile("media/player" + to_string(shipID) + ".png"))
 		throw std::exception("Failed to load player texture");
 	if (!mShieldTexture.loadFromFile("media/shield.png"))
 		throw std::exception("Failed to load shield texture");
@@ -23,10 +23,18 @@ PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 
 	// Load gun points
 	// TODO move this to JSON
-	mGunPoints.push_back(Vec2(-10.0f, -16.0f));
-	mGunPoints.push_back(Vec2(10.0f, -16.0f));
-	mGunPoints.push_back(Vec2(-22.0f, -8.0f));
-	mGunPoints.push_back(Vec2(22.0f, -8.0f));
+	if (shipID == 1)
+	{
+		mGunPoints.push_back(Vec2(-10.0f, -16.0f));
+		mGunPoints.push_back(Vec2(10.0f, -16.0f));
+		mGunPoints.push_back(Vec2(-22.0f, -8.0f));
+		mGunPoints.push_back(Vec2(22.0f, -8.0f));
+	}
+	else if (shipID == 2)
+	{
+		mGunPoints.push_back(Vec2(-20.0f, -20.0f));
+		mGunPoints.push_back(Vec2(20.0f, -20.0f));
+	}
 
 	// Set up ship sprite
 	Vec2 shipTextureSize((float)mShipTexture.getSize().x, (float)mShipTexture.getSize().y);

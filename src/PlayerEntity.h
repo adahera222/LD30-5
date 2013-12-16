@@ -45,6 +45,7 @@ private:
 	uint mShipID;
 
 	// Bullet Time
+	bool mChargingBulletTime;
 	float mRemainingBulletTime;
 	bool mBulletTime;
 

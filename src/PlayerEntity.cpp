@@ -8,6 +8,8 @@
 
 PlayerEntity::PlayerEntity(const Vec2& position, uint shipID) :
 	DamageableEntity(position, 1000, false),
+	mRemainingBulletTime(1.0f),
+	mChargingBulletTime(false),
 	mShipID(shipID)
 {
 	// Load textures
@@ -193,10 +195,7 @@ void PlayerEntity::update(float dt)
 	if (mHealth <= 0)
 	{
 		EntityManager::inst().destroyEntity(shared_from_this());
-
-		// Spawn explosion
 		Renderer::inst().createExplosion(mPosition, (float)mShipTexture->getSize().x);
-
 		Game::onDeath();
 	}
 
@@ -214,8 +213,12 @@ void PlayerEntity::update(float dt)
 		targetVelocity.x = MAX_VELOCITY;
 
 	// Bullet time
-	mBulletTime = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
-	mRemainingBulletTime = step(mRemainingBulletTime, mBulletTime ? 0.0f : 1.0f, 5.0f * dt);
+	mBulletTime = !mChargingBulletTime && sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+	mRemainingBulletTime = step(mRemainingBulletTime, mBulletTime ? 0.0f : 1.0f, dt / (mBulletTime ? 5.0f : 10.0f));
+	if (mRemainingBulletTime < EPSILON)
+		mChargingBulletTime = true;
+	if (mRemainingBulletTime == 1.0f && mChargingBulletTime)
+		mChargingBulletTime = false;
 
 	// Shooting
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
@@ -398,6 +401,24 @@ void PlayerEntity::onCollision(shared_ptr<Entity> other)
 
 		// Despawn the bullet
 		bullet->despawn();
+	}
+
+	shared_ptr<EnemyEntity> enemy = dynamic_pointer_cast<EnemyEntity>(other);
+	if (enemy != shared_ptr<EnemyEntity>())
+	{
+		if (other->getSprite().getTexture()->getSize().x > mShipTexture->getSize().x)
+		{
+			// Destroy the ship
+			mHealth = 0.0f;
+		}
+		else
+		{
+			// Take lots of damage
+			damage(other->getPosition() - mPosition, 200);
+
+			// Destroy the other entity
+			enemy->damage(other->getPosition() - mPosition, 999999);
+		}
 	}
 }
 

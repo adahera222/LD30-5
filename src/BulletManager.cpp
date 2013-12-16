@@ -13,7 +13,7 @@ BulletManager::BulletManager()
 	mBulletTextures.insert(make_pair(BT_ENEMY_COMMON, ResourceCache::inst().getTexture("bullet-enemy-common.png")));
 
 	// Create initial bullets
-	for (uint i = 0; i < 50; ++i)
+	for (uint i = 0; i < 500; ++i)
 		mPlayerBulletCache.push_back(EntityManager::inst().createBullet(true));
 	for (uint i = 0; i < 500; ++i)
 		mNonPlayerBulletCache.push_back(EntityManager::inst().createBullet(false));

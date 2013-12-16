@@ -43,7 +43,7 @@ int rowSize = initialRowSize;
 int enemyCounter = 1;
 float lastScoreTime = 0.0f;
 float spawnInterval = 5.0f;
-float lastSpawnTime = -spawnInterval;
+float lastSpawnTime = 0.0f;
 float gameOverTimer = 0.0f;
 
 void switchState(GameState state)
@@ -112,7 +112,15 @@ void switchState(GameState state)
 		break;
 
 	case GS_GAME:
-	{
+		{
+			Game::score = 0;
+			rowSize = initialRowSize;
+			enemyCounter = 1;
+			lastScoreTime = 0.0f;
+			spawnInterval = 5.0f;
+			lastSpawnTime = 0.0f;
+			gameOverTimer = 0.0f;
+
 			gamePrompt.setFont(font);
 			gamePrompt.setCharacterSize(14);
 			gamePrompt.setPosition(Vec2(0.0f, 0.0f));
@@ -121,24 +129,9 @@ void switchState(GameState state)
 			controls.setFont(font);
 			controls.setCharacterSize(14);
 			controls.setPosition(Vec2(0.0f, Game::SCREEN_HEIGHT - 14.0f));
-
-			vector<string> lines;
-			lines.push_back("You were destroyed!");
-			lines.push_back("Game over...");
-			lines.push_back("Score: " + to_string(lastScore));
-
-			for (int i = 0; i < lines.size(); ++i)
-			{
-				sf::Text text(lines[i], font, 40);
-				sf::FloatRect rect = text.getLocalBounds();
-				text.setOrigin(rect.left + rect.width / 2.0f, rect.top + rect.height / 2.0f);
-				text.setPosition(Vec2(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 4 + 40 * i));
-				gameOverPrompt.push_back(text);
-			}
 			
 			// Create player
 			EntityManager::inst().createPlayer(Vec2((float)Game::SCREEN_WIDTH / 2, (float)Game::SCREEN_HEIGHT * 2.0f / 3.0f), shipID);
-
 		}
 		break;
 
@@ -333,6 +326,20 @@ void Game::onDeath()
 	lastScore = Game::score;
 	highScore = Game::score;
 	gameOverTimer = Game::now;
+
+	vector<string> lines;
+	lines.push_back("You were destroyed!");
+	lines.push_back("Game over...");
+	lines.push_back("Score: " + to_string(lastScore));
+
+	for (int i = 0; i < lines.size(); ++i)
+	{
+		sf::Text text(lines[i], font, 40);
+		sf::FloatRect rect = text.getLocalBounds();
+		text.setOrigin(rect.left + rect.width / 2.0f, rect.top + rect.height / 2.0f);
+		text.setPosition(Vec2(Game::SCREEN_WIDTH / 2, Game::SCREEN_HEIGHT / 3 + 40 * i));
+		gameOverPrompt.push_back(text);
+	}
 }
 
 float Game::getTimeRate()

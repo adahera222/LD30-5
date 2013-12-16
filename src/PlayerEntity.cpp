@@ -199,19 +199,6 @@ void PlayerEntity::update(float dt)
 		Game::onDeath();
 	}
 
-	// Handle controls
-	static const float MAX_VELOCITY = 300.0f;
-	static const float ACCELERATION = 2000.0f;
-	Vec2 targetVelocity(0.0f, 0.0f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		targetVelocity.y = -MAX_VELOCITY;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		targetVelocity.y = MAX_VELOCITY;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		targetVelocity.x = -MAX_VELOCITY;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		targetVelocity.x = MAX_VELOCITY;
-
 	// Bullet time
 	mBulletTime = !mChargingBulletTime && sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 	mRemainingBulletTime = step(mRemainingBulletTime, mBulletTime ? 0.0f : 1.0f, dt / (mBulletTime ? 5.0f : 10.0f));
@@ -260,9 +247,35 @@ void PlayerEntity::update(float dt)
 		_specialAttack();
 
 	// Update velocity
+	static const float MAX_VELOCITY = 300.0f;
+	static const float ACCELERATION = 2000.0f;
+	Vec2 targetVelocity(0.0f, 0.0f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		targetVelocity.y = -MAX_VELOCITY;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		targetVelocity.y = MAX_VELOCITY;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		targetVelocity.x = -MAX_VELOCITY;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		targetVelocity.x = MAX_VELOCITY;
 	mVelocity.x = step(mVelocity.x, targetVelocity.x, ACCELERATION * dt);
 	mVelocity.y = step(mVelocity.y, targetVelocity.y, ACCELERATION * dt);
-	mPosition += mVelocity * dt;
+
+	// Force from edge of screen
+	Vec2 edgeForce(0.0f, 0.0f);
+	float margin = mShipTexture->getSize().x * 0.5f;
+	if (mPosition.x < margin)
+		edgeForce.x += margin - mPosition.x;
+	if (mPosition.x > Game::SCREEN_WIDTH - margin)
+		edgeForce.x -= margin - (Game::SCREEN_WIDTH - mPosition.x);
+	if (mPosition.y < margin)
+		edgeForce.y += margin - mPosition.y;
+	if (mPosition.y > Game::SCREEN_HEIGHT - margin)
+		edgeForce.y -= margin - (Game::SCREEN_HEIGHT - mPosition.y);
+	edgeForce *= ACCELERATION;
+
+	// Update position
+	mPosition += mVelocity * dt + 0.5f * edgeForce * dt * dt; // s = ut + 1/2at^2
 
 	// Fade out shields
 	for (auto i = mShields.begin(); i != mShields.end(); ++i)

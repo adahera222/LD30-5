@@ -80,6 +80,8 @@ void EnemyEntity::onCollision(shared_ptr<Entity> other)
 	// If we're dead - remove ourselves
 	if (mHealth <= 0)
 	{
+		Game::score += mTexture->getSize().x; // Larger entities = more points
+
 		EntityManager::inst().destroyEntity(shared_from_this());
 
 		// Spawn explosion

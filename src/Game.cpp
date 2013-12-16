@@ -190,24 +190,27 @@ void updateState(float dt)
 				lastScoreTime = Game::now;
 				Game::score += 100;
 
+				// Truncate last 2 zeros
+				int truncatedScore = (int)floor((float)Game::score / 100.0f) * 100;
+
 				// Increase difficulty every 30 seconds from 1 minute onwards
-				if (Game::score > 5900)
+				if (truncatedScore > 5999)
 				{
 					int difficultyThreshold = 3000;
 					if (rowSize < 10)
 					{
-						if (Game::score % difficultyThreshold == 0)
+						if (truncatedScore % difficultyThreshold == 0)
 							rowSize++;
 					}
 					else if (spawnInterval > 1.0f)
 					{
-						if (Game::score % difficultyThreshold == 0)
+						if (truncatedScore % difficultyThreshold == 0)
 							spawnInterval -= 0.1f;
 					}
 				}
 
 				// Spawn the boss every 3 minutes
-				if (Game::score % (3 * 60 * 100) == 0 && boss.lock() == shared_ptr<EnemyEntity>())
+				if (truncatedScore % (3 * 60 * 100) == 0 && boss.lock() == shared_ptr<EnemyEntity>())
 					boss = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
 			}
 			if (boss.lock() == shared_ptr<EnemyEntity>())

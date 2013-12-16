@@ -146,6 +146,14 @@ void EntityManager::destroyEntity(shared_ptr<Entity> ent)
 	mEntities.erase(remove(mEntities.begin(), mEntities.end(), ent), mEntities.end());
 }
 
+void EntityManager::clearAllEntities()
+{
+	mSpecialWeapons.clear();
+	mNonPlayerBullets.clear();
+	mPlayerBullets.clear();
+	mEntities.clear();
+}
+
 bool isOutside(const Vec2& position)
 {
 	float padding = 150.0f;

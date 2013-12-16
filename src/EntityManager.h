@@ -26,6 +26,7 @@ public:
 	shared_ptr<LaserWeaponEntity> createLaserWeapon(const Vec2& startingPosition, weak_ptr<DamageableEntity> target);
 	shared_ptr<PlayerEntity> getPlayer() const;
 	void destroyEntity(shared_ptr<Entity> ent);
+	void clearAllEntities();
 
 	void updateAll(float dt);
 

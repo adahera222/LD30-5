@@ -183,51 +183,53 @@ void updateState(float dt)
 				if ((Game::now - gameOverTimer) > 10.0f)
 					switchState(GS_MENU);
 			}
-
-			// Update score
-			if ((Game::now - lastScoreTime) > 1.0f)
+			else
 			{
-				lastScoreTime = Game::now;
-				Game::score += 100;
-
-				// Truncate last 2 zeros
-				int truncatedScore = (int)floor((float)Game::score / 100.0f) * 100;
-
-				// Increase difficulty every 30 seconds from 1 minute onwards
-				if (truncatedScore > 5999)
+				// Update score
+				if ((Game::now - lastScoreTime) > 1.0f)
 				{
-					int difficultyThreshold = 3000;
-					if (rowSize < 10)
+					lastScoreTime = Game::now;
+					Game::score += 100;
+
+					// Truncate last 2 zeros
+					int truncatedScore = (int)floor((float)Game::score / 100.0f) * 100;
+
+					// Increase difficulty every 30 seconds from 1 minute onwards
+					if (truncatedScore > 5999)
 					{
-						if (truncatedScore % difficultyThreshold == 0)
-							rowSize++;
+						int difficultyThreshold = 3000;
+						if (rowSize < 10)
+						{
+							if (truncatedScore % difficultyThreshold == 0)
+								rowSize++;
+						}
+						else if (spawnInterval > 1.0f)
+						{
+							if (truncatedScore % difficultyThreshold == 0)
+								spawnInterval -= 0.1f;
+						}
 					}
-					else if (spawnInterval > 1.0f)
-					{
-						if (truncatedScore % difficultyThreshold == 0)
-							spawnInterval -= 0.1f;
-					}
+
+					// Spawn the boss every 3 minutes
+					if (truncatedScore % (3 * 60 * 100) == 0 && boss.lock() == shared_ptr<EnemyEntity>())
+						boss = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
 				}
-
-				// Spawn the boss every 3 minutes
-				if (truncatedScore % (3 * 60 * 100) == 0 && boss.lock() == shared_ptr<EnemyEntity>())
-					boss = EntityManager::inst().createEnemy(Vec2(Game::SCREEN_WIDTH / 2, -64.0f), "boss1");
-			}
-			if (boss.lock() == shared_ptr<EnemyEntity>())
-			{
-				if ((Game::now - lastSpawnTime) > spawnInterval / Game::getTimeRate())
+				if (boss.lock() == shared_ptr<EnemyEntity>())
 				{
-					lastSpawnTime = Game::now;
+					if ((Game::now - lastSpawnTime) > spawnInterval / Game::getTimeRate())
+					{
+						lastSpawnTime = Game::now;
 
-					// Pick next enemy
-					string enemy = "enemy" + to_string(enemyCounter);
-					enemyCounter++;
-					if (enemyCounter > 3)
-						enemyCounter = 1;
+						// Pick next enemy
+						string enemy = "enemy" + to_string(enemyCounter);
+						enemyCounter++;
+						if (enemyCounter > 3)
+							enemyCounter = 1;
 
-					// Spawn a row of them
-					for (int x = 1; x < (rowSize + 1); x++)
-						EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1), -16.0f), enemy);
+						// Spawn a row of them
+						for (int x = 1; x < (rowSize + 1); x++)
+							EntityManager::inst().createEnemy(Vec2((float)x * Game::SCREEN_WIDTH / (rowSize + 1), -16.0f), enemy);
+					}
 				}
 			}
 		}
@@ -329,6 +331,8 @@ void Game::onDeath()
 	lastScore = Game::score;
 	highScore = Game::score;
 	gameOverTimer = Game::now;
+
+	EntityManager::inst().clearAllEntities();
 
 	vector<string> lines;
 	lines.push_back("You were destroyed!");
